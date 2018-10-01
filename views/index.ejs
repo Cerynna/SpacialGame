@@ -1,0 +1,55 @@
+<%- include('partials/header'); -%>
+<div class="container" id="main">
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="box listPlayer">
+                <h3>Liste des Joueurs</h3>
+                <div id="listPlayer">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs">
+            <div class="box tchat">
+
+                <div id="ongletMessage">
+                    <ul>
+                        <li class="active">
+                            Général
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs">
+                        <ul id="message">
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs">
+                        <div>
+                            <input type="text" id="inputMessage">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-2">
+
+            <ul id="listGame">
+                <li>
+                    <div class="Univers" id="createGame">
+                        <h4>New Game</h4>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/modal'); -%>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
+<%- include('partials/footer'); -%>

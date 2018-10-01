@@ -1,0 +1,119 @@
+@import "partials/reset";
+@import "partials/grid";
+@import "partials/modal";
+@import "partials/main";
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+
+
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000;
+}
+
+
+body {
+  background: url('../img/back.png');
+  background-attachment: fixed;
+  font-family: 'Raleway', sans-serif;
+
+  h3 {
+    font-size: 1.5em;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .row {
+    margin-bottom: 10px;
+
+    [class*="col-"] {
+      &.center {
+        text-align: center;
+      }
+    }
+  }
+
+  .container {
+    padding: 10px 20px;
+
+    .row {
+      margin-bottom: 10px;
+
+      [class*="col-"] {
+        &.center {
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .btn {
+    background: red;
+    border-radius: 5px;
+    max-width: 150px;
+    text-align: center;
+    font-size: 1.4em;
+    padding: 5px 10px 3px;
+    border: 2px solid red;
+    cursor: pointer;
+    color: yellow;
+
+    &.mini {
+      max-width: 20px;
+    }
+
+    &:hover {
+      background: yellow;
+      border: 2px solid red;
+      color: red;
+    }
+  }
+
+  input {
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.4em;
+    border: 2px solid red;
+    outline: none;
+    color: red;
+    width: 100%;
+
+    &:focus {
+      border: 2px solid yellow;
+    }
+
+  }
+
+  #game {
+    background: red;
+    #topBar{
+      background: yellow;
+      margin-bottom: 0;
+    }
+    #board{
+      background: blue;
+      margin-bottom: 0;
+      padding: 10px 7px;
+      canvas{
+        background: red;
+        height: 700px;
+        width: 1200px;
+      }
+    }
+    #tools{
+      background: green;
+      height: 10vh;
+    }
+  }
+
+}

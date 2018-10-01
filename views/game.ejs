@@ -1,0 +1,236 @@
+<%- include('partials/header'); -%>
+<%- include('partials/modal'); -%>
+<div class="container" id="game">
+    <div class="row" id="topBar">
+        <div class="col-xs">
+            BAR TOP
+        </div>
+    </div>
+    <div class="row" id="board">
+        <div class="col-xs">
+            <canvas id="canvas" width="1200" height="700">
+
+            </canvas>
+        </div>
+    </div>
+    <div class="row" id="tools">
+        <div class="col-xs">
+            TOOLS
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+
+    const Planetes = [
+        [50, 50],
+        [150, 50],
+        [250, 50],
+        [350, 50],
+        [450, 50],
+        [550, 50],
+        [650, 50],
+        [750, 50],
+        [850, 50],
+        [950, 50],
+        [1050, 50],
+        [1150, 50],
+
+        [100, 150],
+        [200, 150],
+        [300, 150],
+        [400, 150],
+        [500, 150],
+        [600, 150],
+        [700, 150],
+        [800, 150],
+        [900, 150],
+        [1000, 150],
+        [1100, 150],
+
+        [50, 250],
+        [150, 250],
+        [250, 250],
+        [350, 250],
+        [450, 250],
+        [550, 250],
+        [650, 250],
+        [750, 250],
+        [850, 250],
+        [950, 250],
+        [1050, 250],
+        [1150, 250],
+
+        [100, 350],
+        [200, 350],
+        [300, 350],
+        [400, 350],
+        [500, 350],
+        [600, 350],
+        [700, 350],
+        [800, 350],
+        [900, 350],
+        [1000, 350],
+        [1100, 350],
+
+        [50, 450],
+        [150, 450],
+        [250, 450],
+        [350, 450],
+        [450, 450],
+        [550, 450],
+        [650, 450],
+        [750, 450],
+        [850, 450],
+        [950, 450],
+        [1050, 450],
+        [1150, 450],
+
+        [100, 550],
+        [200, 550],
+        [300, 550],
+        [400, 550],
+        [500, 550],
+        [600, 550],
+        [700, 550],
+        [800, 550],
+        [900, 550],
+        [1000, 550],
+        [1100, 550],
+
+        [50, 650],
+        [150, 650],
+        [250, 650],
+        [350, 650],
+        [450, 650],
+        [550, 650],
+        [650, 650],
+        [750, 650],
+        [850, 650],
+        [950, 650],
+        [1050, 650],
+        [1150, 650]
+    ];
+
+    console.log(Planetes.length);
+
+    /* let str = "";
+    for (let i = 0; i < 500; i + 50) {
+        str = str + i;
+    }
+    console.log(str); */
+
+
+    const img = new Image();
+    img.onload = function () {
+        context.drawImage(img, 0, 0);
+    };
+    img.src = 'https://mdn.mozillademos.org/files/5395/backdrop.png';
+
+    for (idPlanete in Planetes) {
+        context.beginPath();
+        context.arc(Planetes[idPlanete][0], Planetes[idPlanete][1], 10, 0, 2 * Math.PI, false);
+        context.fillStyle = 'green';
+        context.fill();
+        context.lineWidth = 0;
+        context.strokeStyle = '#fff';
+        context.stroke();
+    }
+
+    function writeMessage(canvas, message) {
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, 600, 30);
+        context.font = '18pt Calibri';
+        context.fillStyle = 'black';
+        context.fillText(message, 10, 25);
+    }
+
+    function checkMouse(postionX, positionY) {
+        let result = false;
+        for (idPlanete in Planetes) {
+            /* Planetes[idPlanete][0]
+            Planetes[idPlanete][1]; */
+            if (postionX >= Planetes[idPlanete][0] - 5 && postionX <= Planetes[idPlanete][0] + 2) {
+                if (positionY >= Planetes[idPlanete][1] - 5 && positionY <= Planetes[idPlanete][1] + 5) {
+                    result = Planetes[idPlanete];
+                }
+            }
+
+        }
+        return result;
+    }
+
+    function zoomPlanete(planete) {
+        const positionX = planete[0];
+        const positionY = planete[1];
+        context.beginPath();
+        context.arc(positionX, positionY, 20, 0, 2 * Math.PI, false);
+        context.fillStyle = 'red';
+        context.fill();
+        context.lineWidth = 0;
+        context.strokeStyle = '#fff';
+        context.stroke();
+        setTimeout(() => {
+            context.clearRect(positionX - 25, positionY - 25, 50,
+                50);
+            context.beginPath();
+            context.arc(positionX, positionY, 10, 0, 2 * Math.PI,
+                false);
+            context.fillStyle = 'green';
+            context.fill();
+            context.lineWidth = 0;
+            context.strokeStyle = '#fff';
+            context.stroke();
+        }, 2000)
+    }
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+    canvas.addEventListener('mousemove', function (evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+
+        const planete = checkMouse(mousePos.x, mousePos.y)
+
+        if (planete !== false) {
+            zoomPlanete(planete);
+        }
+
+
+
+
+        writeMessage(canvas, message);
+    }, false);
+
+
+
+
+    /*         ctx.fillRect(25, 25, 100, 100);
+            ctx.clearRect(45, 45, 60, 60); */
+    /*     ctx.strokeRect(50, 50, 50, 50);
+
+        ctx.beginPath();
+        ctx.moveTo(125, 125);
+        ctx.lineTo(125, 45);
+        ctx.lineTo(45, 125);
+        ctx.closePath();
+        ctx.stroke(); */
+
+    /* ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, 50);
+/*     ctx.lineTo(50, 0);
+    ctx.lineTo(0, 100);
+    ctx.lineTo(100, 0);
+    ctx.closePath();
+    ctx.stroke();*/
+</script>
+<%- include('partials/footer'); -%>
