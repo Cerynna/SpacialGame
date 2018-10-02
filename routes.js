@@ -11,7 +11,7 @@ module.exports = function (app, games) {
     });
 
   });
-  app.get('/game', (req, res) => {
+  app.get('/game-*', (req, res) => {
     let locals = {
       title: 'Page Title',
       description: 'Page Description',

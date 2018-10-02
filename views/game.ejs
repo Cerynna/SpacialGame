@@ -24,121 +24,39 @@
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
 
-
-    const Planetes = [
-        [50, 50],
-        [150, 50],
-        [250, 50],
-        [350, 50],
-        [450, 50],
-        [550, 50],
-        [650, 50],
-        [750, 50],
-        [850, 50],
-        [950, 50],
-        [1050, 50],
-        [1150, 50],
-
-        [100, 150],
-        [200, 150],
-        [300, 150],
-        [400, 150],
-        [500, 150],
-        [600, 150],
-        [700, 150],
-        [800, 150],
-        [900, 150],
-        [1000, 150],
-        [1100, 150],
-
-        [50, 250],
-        [150, 250],
-        [250, 250],
-        [350, 250],
-        [450, 250],
-        [550, 250],
-        [650, 250],
-        [750, 250],
-        [850, 250],
-        [950, 250],
-        [1050, 250],
-        [1150, 250],
-
-        [100, 350],
-        [200, 350],
-        [300, 350],
-        [400, 350],
-        [500, 350],
-        [600, 350],
-        [700, 350],
-        [800, 350],
-        [900, 350],
-        [1000, 350],
-        [1100, 350],
-
-        [50, 450],
-        [150, 450],
-        [250, 450],
-        [350, 450],
-        [450, 450],
-        [550, 450],
-        [650, 450],
-        [750, 450],
-        [850, 450],
-        [950, 450],
-        [1050, 450],
-        [1150, 450],
-
-        [100, 550],
-        [200, 550],
-        [300, 550],
-        [400, 550],
-        [500, 550],
-        [600, 550],
-        [700, 550],
-        [800, 550],
-        [900, 550],
-        [1000, 550],
-        [1100, 550],
-
-        [50, 650],
-        [150, 650],
-        [250, 650],
-        [350, 650],
-        [450, 650],
-        [550, 650],
-        [650, 650],
-        [750, 650],
-        [850, 650],
-        [950, 650],
-        [1050, 650],
-        [1150, 650]
-    ];
-
-    console.log(Planetes.length);
-
-    /* let str = "";
-    for (let i = 0; i < 500; i + 50) {
-        str = str + i;
-    }
-    console.log(str); */
+    const socket = io.connect('http://localhost:1337');
+    const idGame = window.location.pathname.split("-").pop();
+    var Game = false;
 
 
-    const img = new Image();
-    img.onload = function () {
-        context.drawImage(img, 0, 0);
-    };
-    img.src = 'https://mdn.mozillademos.org/files/5395/backdrop.png';
+    socket.emit('getGame', idGame);
 
-    for (idPlanete in Planetes) {
+    socket.on('setGame', function (GamefromServer) {
+        Game = GamefromServer;
+    });
+
+    setTimeout(() => {
+        console.log(Game.galaxy);
+
+
+for (idPlanete in Game.galaxy) {
         context.beginPath();
-        context.arc(Planetes[idPlanete][0], Planetes[idPlanete][1], 10, 0, 2 * Math.PI, false);
+        context.arc(Game.galaxy[idPlanete].position[0], Game.galaxy[idPlanete].position[1], 10, 0, 2 * Math.PI, false);
         context.fillStyle = 'green';
         context.fill();
         context.lineWidth = 0;
         context.strokeStyle = '#fff';
         context.stroke();
     }
+
+
+    }, 5000)
+
+    const img = new Image();
+    img.onload = function () {
+        context.drawImage(img, 0, 0);
+    };
+    img.src = 'https://mdn.mozillademos.org/files/5395/backdrop.png';
 
     function writeMessage(canvas, message) {
         var context = canvas.getContext('2d');
@@ -150,18 +68,17 @@
 
     function checkMouse(postionX, positionY) {
         let result = false;
-        for (idPlanete in Planetes) {
-            /* Planetes[idPlanete][0]
-            Planetes[idPlanete][1]; */
+        /* for (idPlanete in Planetes) {
+
             if (postionX >= Planetes[idPlanete][0] - 5 && postionX <= Planetes[idPlanete][0] + 2) {
                 if (positionY >= Planetes[idPlanete][1] - 5 && positionY <= Planetes[idPlanete][1] + 5) {
                     result = Planetes[idPlanete];
                 }
             }
 
-        }
+        } */
         return result;
-    }
+    } 
 
     function zoomPlanete(planete) {
         const positionX = planete[0];
@@ -194,6 +111,7 @@
             y: evt.clientY - rect.top
         };
     }
+
     canvas.addEventListener('mousemove', function (evt) {
         var mousePos = getMousePos(canvas, evt);
         var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
@@ -204,33 +122,86 @@
             zoomPlanete(planete);
         }
 
-
-
-
         writeMessage(canvas, message);
     }, false);
 
 
 
 
-    /*         ctx.fillRect(25, 25, 100, 100);
-            ctx.clearRect(45, 45, 60, 60); */
-    /*     ctx.strokeRect(50, 50, 50, 50);
+    /* WAIT ANNIMATION !!!!
 
-        ctx.beginPath();
-        ctx.moveTo(125, 125);
-        ctx.lineTo(125, 45);
-        ctx.lineTo(45, 125);
-        ctx.closePath();
-        ctx.stroke(); */
+    var rotateAngle = null;
+    var showGuideGrid = true; // set to false to hide the drawing assistance grid
+    var animateTheLoader = true; // set to false to disable animation and see the static drawing
 
-    /* ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 50);
-/*     ctx.lineTo(50, 0);
-    ctx.lineTo(0, 100);
-    ctx.lineTo(100, 0);
-    ctx.closePath();
-    ctx.stroke();*/
+    window.onload = function() {
+
+        rotateAngle = 0;
+
+        if (animateTheLoader) {
+            loadingAnimation();
+        }
+        else {
+            loadingDrawing();
+        }
+    };
+
+    function loadingDrawing() {
+        context.save();
+
+        context.translate(150, 150);
+        context.rotate(rotateAngle * Math.PI/180);
+        context.translate(-150, -150);
+
+        context.beginPath();
+        context.strokeStyle = "white";
+        context.lineWidth = 15;
+        context.lineCap = "round";
+
+        context.fillStyle = "rgba(255,255,255,1)";
+        context.moveTo(150, 120);
+        context.lineTo(150, 50);
+        context.stroke();
+
+        context.strokeStyle = "rgba(255,255,255,0.8)";
+        context.moveTo(130, 130);
+        context.lineTo(80, 80);
+        context.stroke();
+
+        context.strokeStyle = "rgba(255,255,255,0.5)";
+        context.moveTo(120, 150);
+        context.lineTo(50, 150);
+        context.stroke();
+
+        context.strokeStyle = "rgba(255,255,255,0.35)";
+        context.moveTo(130, 170);
+        context.lineTo(80, 220);
+        context.stroke();
+
+        context.strokeStyle = "rgba(255,255,255,0.2)";
+        context.moveTo(150, 180);
+        context.lineTo(150, 250);
+        context.stroke();
+
+        context.closePath();
+
+        context.save();
+
+        context.restore();
+    }
+
+    function loadingAnimation() {
+        canvas.width = canvas.width; // redraw canvas for animation effect
+
+        loadingDrawing();
+
+        rotateAngle += 5;
+
+        if (rotateAngle > 360) {
+            rotateAngle = 5;
+        }
+
+        setTimeout(loadingAnimation, 30);
+    } */
 </script>
 <%- include('partials/footer'); -%>

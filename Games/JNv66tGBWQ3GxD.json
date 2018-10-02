@@ -1,0 +1,365 @@
+{
+    "name": "Univer de azert",
+    "size": "2",
+    "id": "JNv66tGBWQ3GxD",
+    "whoCreate": {
+        "id": "EfvosIbSAk",
+        "pseudo": "azert",
+        "md5": "9fc6b53eaf5e954d13ef3e084a100d25",
+        "color": "#774D4E"
+    },
+    "date": {
+        "create": 1538431650007
+    },
+    "playerIn": {
+        "0": {
+            "id": "EfvosIbSAk",
+            "pseudo": "azert",
+            "md5": "9fc6b53eaf5e954d13ef3e084a100d25",
+            "color": "#774D4E"
+        },
+        "1": {
+            "id": "28eJrxKeZq",
+            "pseudo": "iop",
+            "md5": "7c7d0af4fce65400e1b67346bdb38350",
+            "color": "#7C71D5"
+        }
+    },
+    "galaxy": [{
+        "name": "50 - 50",
+        "size": 18,
+        "position": [50, 50]
+    }, {
+        "name": "50 - 150",
+        "size": 10,
+        "position": [50, 150]
+    }, {
+        "name": "50 - 250",
+        "size": 15,
+        "position": [50, 250]
+    }, {
+        "name": "50 - 350",
+        "size": 10,
+        "position": [50, 350]
+    }, {
+        "name": "50 - 450",
+        "size": 17,
+        "position": [50, 450]
+    }, {
+        "name": "50 - 550",
+        "size": 13,
+        "position": [50, 550]
+    }, {
+        "name": "50 - 650",
+        "size": 19,
+        "position": [50, 650]
+    }, {
+        "name": "150 - 50",
+        "size": 18,
+        "position": [150, 50]
+    }, {
+        "name": "150 - 150",
+        "size": 11,
+        "position": [150, 150]
+    }, {
+        "name": "150 - 250",
+        "size": 17,
+        "position": [150, 250]
+    }, {
+        "name": "150 - 350",
+        "size": 10,
+        "position": [150, 350]
+    }, {
+        "name": "150 - 450",
+        "size": 11,
+        "position": [150, 450]
+    }, {
+        "name": "150 - 550",
+        "size": 16,
+        "position": [150, 550]
+    }, {
+        "name": "150 - 650",
+        "size": 17,
+        "position": [150, 650]
+    }, {
+        "name": "250 - 50",
+        "size": 16,
+        "position": [250, 50]
+    }, {
+        "name": "250 - 150",
+        "size": 19,
+        "position": [250, 150]
+    }, {
+        "name": "250 - 250",
+        "size": 12,
+        "position": [250, 250]
+    }, {
+        "name": "250 - 350",
+        "size": 10,
+        "position": [250, 350]
+    }, {
+        "name": "250 - 450",
+        "size": 17,
+        "position": [250, 450]
+    }, {
+        "name": "250 - 550",
+        "size": 18,
+        "position": [250, 550]
+    }, {
+        "name": "250 - 650",
+        "size": 11,
+        "position": [250, 650]
+    }, {
+        "name": "350 - 50",
+        "size": 14,
+        "position": [350, 50]
+    }, {
+        "name": "350 - 150",
+        "size": 15,
+        "position": [350, 150]
+    }, {
+        "name": "350 - 250",
+        "size": 15,
+        "position": [350, 250]
+    }, {
+        "name": "350 - 350",
+        "size": 19,
+        "position": [350, 350]
+    }, {
+        "name": "350 - 450",
+        "size": 13,
+        "position": [350, 450]
+    }, {
+        "name": "350 - 550",
+        "size": 15,
+        "position": [350, 550]
+    }, {
+        "name": "350 - 650",
+        "size": 15,
+        "position": [350, 650]
+    }, {
+        "name": "450 - 50",
+        "size": 13,
+        "position": [450, 50]
+    }, {
+        "name": "450 - 150",
+        "size": 16,
+        "position": [450, 150]
+    }, {
+        "name": "450 - 250",
+        "size": 14,
+        "position": [450, 250]
+    }, {
+        "name": "450 - 350",
+        "size": 18,
+        "position": [450, 350]
+    }, {
+        "name": "450 - 450",
+        "size": 14,
+        "position": [450, 450]
+    }, {
+        "name": "450 - 550",
+        "size": 16,
+        "position": [450, 550]
+    }, {
+        "name": "450 - 650",
+        "size": 16,
+        "position": [450, 650]
+    }, {
+        "name": "550 - 50",
+        "size": 18,
+        "position": [550, 50]
+    }, {
+        "name": "550 - 150",
+        "size": 15,
+        "position": [550, 150]
+    }, {
+        "name": "550 - 250",
+        "size": 13,
+        "position": [550, 250]
+    }, {
+        "name": "550 - 350",
+        "size": 18,
+        "position": [550, 350]
+    }, {
+        "name": "550 - 450",
+        "size": 18,
+        "position": [550, 450]
+    }, {
+        "name": "550 - 550",
+        "size": 14,
+        "position": [550, 550]
+    }, {
+        "name": "550 - 650",
+        "size": 19,
+        "position": [550, 650]
+    }, {
+        "name": "650 - 50",
+        "size": 18,
+        "position": [650, 50]
+    }, {
+        "name": "650 - 150",
+        "size": 10,
+        "position": [650, 150]
+    }, {
+        "name": "650 - 250",
+        "size": 10,
+        "position": [650, 250]
+    }, {
+        "name": "650 - 350",
+        "size": 16,
+        "position": [650, 350]
+    }, {
+        "name": "650 - 450",
+        "size": 18,
+        "position": [650, 450]
+    }, {
+        "name": "650 - 550",
+        "size": 12,
+        "position": [650, 550]
+    }, {
+        "name": "650 - 650",
+        "size": 19,
+        "position": [650, 650]
+    }, {
+        "name": "750 - 50",
+        "size": 15,
+        "position": [750, 50]
+    }, {
+        "name": "750 - 150",
+        "size": 19,
+        "position": [750, 150]
+    }, {
+        "name": "750 - 250",
+        "size": 11,
+        "position": [750, 250]
+    }, {
+        "name": "750 - 350",
+        "size": 14,
+        "position": [750, 350]
+    }, {
+        "name": "750 - 450",
+        "size": 13,
+        "position": [750, 450]
+    }, {
+        "name": "750 - 550",
+        "size": 16,
+        "position": [750, 550]
+    }, {
+        "name": "750 - 650",
+        "size": 13,
+        "position": [750, 650]
+    }, {
+        "name": "850 - 50",
+        "size": 18,
+        "position": [850, 50]
+    }, {
+        "name": "850 - 150",
+        "size": 12,
+        "position": [850, 150]
+    }, {
+        "name": "850 - 250",
+        "size": 12,
+        "position": [850, 250]
+    }, {
+        "name": "850 - 350",
+        "size": 11,
+        "position": [850, 350]
+    }, {
+        "name": "850 - 450",
+        "size": 15,
+        "position": [850, 450]
+    }, {
+        "name": "850 - 550",
+        "size": 17,
+        "position": [850, 550]
+    }, {
+        "name": "850 - 650",
+        "size": 15,
+        "position": [850, 650]
+    }, {
+        "name": "950 - 50",
+        "size": 19,
+        "position": [950, 50]
+    }, {
+        "name": "950 - 150",
+        "size": 19,
+        "position": [950, 150]
+    }, {
+        "name": "950 - 250",
+        "size": 10,
+        "position": [950, 250]
+    }, {
+        "name": "950 - 350",
+        "size": 10,
+        "position": [950, 350]
+    }, {
+        "name": "950 - 450",
+        "size": 16,
+        "position": [950, 450]
+    }, {
+        "name": "950 - 550",
+        "size": 19,
+        "position": [950, 550]
+    }, {
+        "name": "950 - 650",
+        "size": 14,
+        "position": [950, 650]
+    }, {
+        "name": "1050 - 50",
+        "size": 16,
+        "position": [1050, 50]
+    }, {
+        "name": "1050 - 150",
+        "size": 14,
+        "position": [1050, 150]
+    }, {
+        "name": "1050 - 250",
+        "size": 17,
+        "position": [1050, 250]
+    }, {
+        "name": "1050 - 350",
+        "size": 18,
+        "position": [1050, 350]
+    }, {
+        "name": "1050 - 450",
+        "size": 18,
+        "position": [1050, 450]
+    }, {
+        "name": "1050 - 550",
+        "size": 11,
+        "position": [1050, 550]
+    }, {
+        "name": "1050 - 650",
+        "size": 10,
+        "position": [1050, 650]
+    }, {
+        "name": "1150 - 50",
+        "size": 16,
+        "position": [1150, 50]
+    }, {
+        "name": "1150 - 150",
+        "size": 19,
+        "position": [1150, 150]
+    }, {
+        "name": "1150 - 250",
+        "size": 18,
+        "position": [1150, 250]
+    }, {
+        "name": "1150 - 350",
+        "size": 19,
+        "position": [1150, 350]
+    }, {
+        "name": "1150 - 450",
+        "size": 18,
+        "position": [1150, 450]
+    }, {
+        "name": "1150 - 550",
+        "size": 15,
+        "position": [1150, 550]
+    }, {
+        "name": "1150 - 650",
+        "size": 13,
+        "position": [1150, 650]
+    }]
+}

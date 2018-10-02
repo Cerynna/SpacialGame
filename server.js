@@ -3,6 +3,7 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const axios = require('axios');
+const fs = require('fs');
 const md5 = require('md5');
 const session = require('express-session');
 const users = {};
@@ -44,7 +45,26 @@ function getRandomColor() {
   return color;
 }
 
-
+function getGalaxy() {
+  let Planetes = [];
+  let y = 1;
+  for (let i = 50; i < 1200; i += 100) {
+    let u = 100
+    if (y % 2) {
+      u = 50;
+    }
+    for (u; u < 700; u += 100) {
+      const Planete = {
+        name: i + " - " + u + " - " + y,
+        size: Math.floor((Math.random() + 1) * 10),
+        position: [i, u],
+      };
+      Planetes.push(Planete);
+    }
+    y++;
+  }
+  return Planetes;
+}
 
 io.on('connection', (socket) => {
   io.emit('refreshUnivers', games);
@@ -84,7 +104,7 @@ io.on('connection', (socket) => {
         const key = Object.keys(games[idGame].playerIn).length
         games[idGame].playerIn[key] = whoAccept;
         if (games[idGame].size == Object.keys(games[idGame].playerIn).length) {
-          io.emit('gameStart', games[idGame].playerIn);
+          io.emit('gameStart', games[idGame].playerIn, games[idGame]);
           io.emit('newMessage', '** Une parti va débuter (' + games[idGame].name + ') **', server, makeid(10));
 
         }
@@ -120,10 +140,25 @@ io.on('connection', (socket) => {
     } else {
       io.emit('error', 'Vous avez déjà un Univers de créer');
     }
-
-
-
   });
+
+  socket.on('createGalaxy', (Game) => {
+    Game.galaxy = getGalaxy();
+    Game.date.start = Date.now();
+
+    fs.appendFile("Games/" + Game.id + ".json", JSON.stringify(Game), function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Galaxy create !!!");
+    });
+  });
+
+  socket.on('getGame', (idGame) => {
+    var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
+    io.emit('setGame', Game);
+  });
+
 
 
 });
@@ -131,18 +166,5 @@ io.on('connection', (socket) => {
 
 http.listen(1337, function () {
   console.log('listening on *:1337');
-
-  let Planetes = [];
-  for (let i = 50; i < 1200; i += 100) {
-    for (let u = 50; u < 700; u += 100) {
-
-      const Planete = [
-        i,
-        u,
-      ]
-      Planetes.push(Planete);
-    }
-  }
-  console.log(Planetes);
 
 });

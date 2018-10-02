@@ -1,4 +1,5 @@
 let me = false;
+let Games = false;
 const socket = io.connect('http://localhost:1337');
 const divMain = document.getElementById('main');
 const inputPseudo = document.getElementById('inputPseudo');
@@ -157,13 +158,18 @@ socket.on('refreshUnivers', function (games) {
             '</div>' +
             '</li>';
     }
+    Games = games;
 });
 
-socket.on('gameStart', function (Players) {
+socket.on('gameStart', function (Players, Game) {
     for (let key in Players) {
         if (me.id === Players[key].id) {
+            if (me.id === Game.whoCreate.id) {
+                socket.emit('createGalaxy', Game);
+            }
+
             console.log("ON LANCE LA GAME");
-            document.location.href = "/game"
+            document.location.href = "/game-" + Game.id;
         }
     }
 });
