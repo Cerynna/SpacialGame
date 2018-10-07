@@ -45,6 +45,30 @@ function getRandomColor() {
   return color;
 }
 
+function random_rgba() {
+  const o = Math.round;
+  const r = Math.random;
+  const s = 255;
+  const red = o(r() * s);
+  const green = o(r() * s);
+  const blue = o(r() * s);
+
+  const rgb = 'rgb(' + red + ',' + green + ',' + blue + ')';
+
+  return {
+    "red": red,
+    "green": green,
+    "blue": blue,
+    "rgb": rgb
+  };
+
+}
+
+
+
+
+
+
 function getGalaxy() {
   let Planetes = [];
   let y = 1;
@@ -54,15 +78,45 @@ function getGalaxy() {
       u = 50;
     }
     for (u; u < 700; u += 100) {
+      const randomValue = random_rgba();
+      let construct = [{
+          "type": "atack",
+          "player": null,
+        },
+        {
+          "type": "explo",
+          "player": null,
+        },
+        {
+          "type": "commerce",
+          "player": null,
+        },
+        {
+          "type": "megapole",
+          "player": null,
+        }
+      ];
       const Planete = {
-        name: i + " - " + u + " - " + y,
-        size: Math.floor((Math.random() + 1) * 10),
-        position: [i, u],
+        "name": i + " - " + u + " - " + y,
+        "size": Math.floor((Math.random() + 1) * 10),
+        "position": [i, u],
+        "color": randomValue.rgb,
+        "construct": construct,
+        "connect": false,
+        "value": {
+          "fer": randomValue.red,
+          "elec": randomValue.blue,
+          "money": randomValue.green,
+        }
       };
+
+
+
       Planetes.push(Planete);
     }
     y++;
   }
+
   return Planetes;
 }
 
@@ -74,11 +128,17 @@ io.on('connection', (socket) => {
     pseudo: '',
     md5: md5(userId),
     color: getRandomColor(),
+    Res: {
+      "Iron": 255,
+      "Elec": 255,
+      "Money": 255
+    },
+    base: {}
   };
   socket.on('join', (pseudo) => {
     user.pseudo = pseudo;
     users[user.id] = user;
-    io.emit('playerNew', users, userId);
+    io.emit('playerNew', users, userId, pseudo);
     io.emit('newMessage', '** Bienvenue ' + pseudo + ' ! **', server, makeid(10));
 
   });
@@ -144,6 +204,62 @@ io.on('connection', (socket) => {
 
   socket.on('createGalaxy', (Game) => {
     Game.galaxy = getGalaxy();
+
+    // POSITION DE DEPART
+    for (key in Game.playerIn) {
+      let keyBase;
+      switch (key) {
+        case '0':
+          Game.playerIn[key].base = [250, 350];
+          keyBase = findKeyPlanete(250, 350, Game.galaxy);
+          Game.galaxy[keyBase].value.fer = 255;
+          Game.galaxy[keyBase].value.elec = 255;
+          Game.galaxy[keyBase].value.money = 255;
+          Game.galaxy[keyBase].construct = [{
+              "type": "atack",
+              "player": key,
+            },
+            {
+              "type": "explo",
+              "player": key,
+            },
+            {
+              "type": "commerce",
+              "player": key,
+            },
+            {
+              "type": "megapole",
+              "player": null,
+            }
+          ];
+          break;
+        case '1':
+          Game.playerIn[key].base = [850, 350];
+          keyBase = findKeyPlanete(850, 350, Game.galaxy);
+          Game.galaxy[keyBase].value.fer = 255;
+          Game.galaxy[keyBase].value.elec = 255;
+          Game.galaxy[keyBase].value.money = 255;
+          Game.galaxy[keyBase].construct = [{
+              "type": "atack",
+              "player": key,
+            },
+            {
+              "type": "explo",
+              "player": key,
+            },
+            {
+              "type": "commerce",
+              "player": key,
+            },
+            {
+              "type": "megapole",
+              "player": null,
+            }
+          ];
+          break;
+      }
+    }
+
     Game.date.start = Date.now();
 
     fs.appendFile("Games/" + Game.id + ".json", JSON.stringify(Game), function (err) {
@@ -163,6 +279,13 @@ io.on('connection', (socket) => {
 
 });
 
+function findKeyPlanete(positionX, positionY, Galaxy) {
+  for (let key in Galaxy) {
+    if (positionX == Galaxy[key].position[0] && positionY == Galaxy[key].position[1]) {
+      return key;
+    }
+  }
+}
 
 http.listen(1337, function () {
   console.log('listening on *:1337');

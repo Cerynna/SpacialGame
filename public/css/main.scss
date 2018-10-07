@@ -95,24 +95,181 @@ body {
   }
 
   #game {
-    background: red;
-    #topBar{
+    background: #FFF;
+
+    #planetInfo {
+      position: absolute;
+      min-width: 300px;
+      top: -400px;
+      left: -400px;
+      background: rgba(45, 45, 45, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+      border: 2px solid #000;
+      cursor: pointer;
+      color: #FFF;
+      display: none;
+      z-index: 500;
+
+
+
+      .value {
+        [id*="value-"] {
+          padding: 2px 5px 10px 1.7em;
+          min-width: 66px;
+          font-size: 1.4em;
+          margin-bottom: 5px;
+          color: #000;
+          max-width: 50px;
+          border-radius: 5px;
+        }
+
+        #value-Fer {
+          background: url('../img/iron.png') rgba(255, 255, 255, 0.8) no-repeat;
+          background-size: contain;
+          border: 2px solid #FFF;
+        }
+
+        #value-Elec {
+          background: url('../img/elec.png') rgba(255, 255, 255, 0.8) no-repeat;
+          background-size: contain;
+          border: 2px solid #FFF;
+          ;
+        }
+
+        #value-Money {
+          background: url('../img/money.png') rgba(255, 255, 255, 0.8) no-repeat;
+          background-size: contain;
+          border: 2px solid #FFF;
+        }
+      }
+
+      #construct {
+        padding-top: 10px;
+
+        .batiment {
+          height: 60px;
+          border: 2px solid #FFF;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 5px;
+          margin: 5px 5px;
+
+          &:hover {
+            border: 2px solid #000;
+            background: rgba(45, 45, 45, 0.8);
+          }
+
+          &.player0 {
+            border: 2px solid rgba(255, 0, 0, 1);
+            background: rgba(255, 0, 0, 0.5);
+          }
+
+          &.player1 {
+            border: 2px solid rgba(0, 0, 255, 1);
+            background: rgba(0, 0, 255, 0.5);
+          }
+        }
+
+        .atack,
+        .explo,
+        .commerce,
+        .megapole {
+          height: 60px;
+        }
+
+        .megapole {
+          background: url('../img/batiments/megapole.png') no-repeat;
+          background-size: contain;
+          background-position: 50% 50%;
+        }
+
+        .atack {
+          background: url('../img/batiments/attack.png') no-repeat;
+          background-size: contain;
+          background-position: 50% 50%;
+        }
+
+        .explo {
+          background: url('../img/batiments/explo.png') no-repeat;
+          background-size: contain;
+          background-position: 50% 50%;
+        }
+
+        .commerce {
+          background: url('../img/batiments/commerce.png') no-repeat;
+          background-size: contain;
+          background-position: 50% 50%;
+        }
+
+      }
+    }
+
+    #topBar {
       background: yellow;
       margin-bottom: 0;
+
+      .ressources {
+        background: rgba(45, 45, 45, 0.8) no-repeat;
+        border: 2px solid #000;
+        padding: 2px 10px 2px 0px;
+        border-radius: 5px;
+        margin: 2px 5px;
+        color: #FFF;
+        font-size: 1.3em;
+        font-family: 'Orbitron', sans-serif;
+        .iron,
+        .elec,
+        .money {
+          min-width: 60px;
+          height: 30px;
+          padding-left: 35px;
+          padding-top: 15px;
+
+        }
+
+        .iron {
+          background: url('../img/iron.png') no-repeat;
+          background-size: contain;
+          background-position: 0% 50%;
+        }
+
+        .elec {
+          background: url('../img/elec.png') no-repeat;
+          background-size: contain;
+          background-position: 0% 50%;
+        }
+
+        .money {
+          background: url('../img/money.png') no-repeat;
+          background-size: contain;
+          background-position: 0% 50%;
+        }
+
+
+      }
     }
-    #board{
+
+    #board {
       background: blue;
       margin-bottom: 0;
       padding: 10px 7px;
-      canvas{
-        background: red;
+
+      #Brouillard {
+        height: 700px;
+        width: 1200px;
+        position: absolute;
+      }
+
+      #Map {
+        background: rgb(12, 15, 19);
         height: 700px;
         width: 1200px;
       }
     }
-    #tools{
+
+    #tools {
       background: green;
-      height: 10vh;
+      padding: 20px;
     }
   }
 

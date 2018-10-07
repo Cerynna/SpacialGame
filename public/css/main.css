@@ -305,12 +305,151 @@ body input:focus {
 }
 
 body #game {
-  background: red;
+  background: #FFF;
+}
+
+body #game #planetInfo {
+  position: absolute;
+  min-width: 300px;
+  top: -400px;
+  left: -400px;
+  background: rgba(45, 45, 45, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  cursor: pointer;
+  color: #FFF;
+  display: none;
+  z-index: 500;
+}
+
+body #game #planetInfo .value [id*="value-"] {
+  padding: 2px 5px 10px 1.7em;
+  min-width: 66px;
+  font-size: 1.4em;
+  margin-bottom: 5px;
+  color: #000;
+  max-width: 50px;
+  border-radius: 5px;
+}
+
+body #game #planetInfo .value #value-Fer {
+  background: url("../img/iron.png") rgba(255, 255, 255, 0.8) no-repeat;
+  background-size: contain;
+  border: 2px solid #FFF;
+}
+
+body #game #planetInfo .value #value-Elec {
+  background: url("../img/elec.png") rgba(255, 255, 255, 0.8) no-repeat;
+  background-size: contain;
+  border: 2px solid #FFF;
+}
+
+body #game #planetInfo .value #value-Money {
+  background: url("../img/money.png") rgba(255, 255, 255, 0.8) no-repeat;
+  background-size: contain;
+  border: 2px solid #FFF;
+}
+
+body #game #planetInfo #construct {
+  padding-top: 10px;
+}
+
+body #game #planetInfo #construct .batiment {
+  height: 60px;
+  border: 2px solid #FFF;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  margin: 5px 5px;
+}
+
+body #game #planetInfo #construct .batiment:hover {
+  border: 2px solid #000;
+  background: rgba(45, 45, 45, 0.8);
+}
+
+body #game #planetInfo #construct .batiment.player0 {
+  border: 2px solid red;
+  background: rgba(255, 0, 0, 0.5);
+}
+
+body #game #planetInfo #construct .batiment.player1 {
+  border: 2px solid blue;
+  background: rgba(0, 0, 255, 0.5);
+}
+
+body #game #planetInfo #construct .atack,
+body #game #planetInfo #construct .explo,
+body #game #planetInfo #construct .commerce,
+body #game #planetInfo #construct .megapole {
+  height: 60px;
+}
+
+body #game #planetInfo #construct .megapole {
+  background: url("../img/batiments/megapole.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #planetInfo #construct .atack {
+  background: url("../img/batiments/attack.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #planetInfo #construct .explo {
+  background: url("../img/batiments/explo.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #planetInfo #construct .commerce {
+  background: url("../img/batiments/commerce.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
 }
 
 body #game #topBar {
   background: yellow;
   margin-bottom: 0;
+}
+
+body #game #topBar .ressources {
+  background: rgba(45, 45, 45, 0.8) no-repeat;
+  border: 2px solid #000;
+  padding: 2px 10px 2px 0px;
+  border-radius: 5px;
+  margin: 2px 5px;
+  color: #FFF;
+  font-size: 1.3em;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body #game #topBar .ressources .iron,
+body #game #topBar .ressources .elec,
+body #game #topBar .ressources .money {
+  min-width: 60px;
+  height: 30px;
+  padding-left: 35px;
+  padding-top: 15px;
+}
+
+body #game #topBar .ressources .iron {
+  background: url("../img/iron.png") no-repeat;
+  background-size: contain;
+  background-position: 0% 50%;
+}
+
+body #game #topBar .ressources .elec {
+  background: url("../img/elec.png") no-repeat;
+  background-size: contain;
+  background-position: 0% 50%;
+}
+
+body #game #topBar .ressources .money {
+  background: url("../img/money.png") no-repeat;
+  background-size: contain;
+  background-position: 0% 50%;
 }
 
 body #game #board {
@@ -319,14 +458,20 @@ body #game #board {
   padding: 10px 7px;
 }
 
-body #game #board canvas {
-  background: red;
+body #game #board #Brouillard {
+  height: 700px;
+  width: 1200px;
+  position: absolute;
+}
+
+body #game #board #Map {
+  background: #0c0f13;
   height: 700px;
   width: 1200px;
 }
 
 body #game #tools {
   background: green;
-  height: 10vh;
+  padding: 20px;
 }
 /*# sourceMappingURL=main.css.map */

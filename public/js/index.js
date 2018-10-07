@@ -19,6 +19,7 @@ divChoisePseudo.style.display = 'block';
 
 document.getElementById("sendPseudo").addEventListener("click", (event) => {
     socket.emit('join', inputPseudo.value);
+    me = inputPseudo.value;
     inputMessage.focus();
 });
 
@@ -67,6 +68,7 @@ document.addEventListener('keypress', (event) => {
     if (touche === 'Enter') {
         if (event.target.id === 'inputPseudo') {
             socket.emit('join', inputPseudo.value);
+            me = inputPseudo.value;
         }
         if (event.target.id === 'inputMessage') {
             socket.emit('sendMessage', inputMessage.value, me);
@@ -75,10 +77,15 @@ document.addEventListener('keypress', (event) => {
     }
 });
 
-socket.on('playerNew', function (listPlayer, whoIam) {
-    if (me === false) {
+socket.on('playerNew', function (listPlayer, whoIam, pseudo) {
+
+    if (me === pseudo) {
         me = listPlayer[whoIam];
+        divModal.style.display = 'none';
+        divChoisePseudo.style.display = 'none';
+        divMain.style.display = 'block';
     }
+
     divListPlayer.innerHTML = '';
     for (let idPlayer in listPlayer) {
         if (whoIam === idPlayer) {
@@ -107,11 +114,10 @@ socket.on('playerNew', function (listPlayer, whoIam) {
                 '</div>';
         }
     }
-    divModal.style.display = 'none';
-    divChoisePseudo.style.display = 'none';
-    divMain.style.display = 'block';
 
-})
+
+
+});
 
 socket.on('notifInvite', (idPlayer, whoSend) => {
     if (me.id === idPlayer) {
@@ -169,7 +175,7 @@ socket.on('gameStart', function (Players, Game) {
             }
 
             console.log("ON LANCE LA GAME");
-            document.location.href = "/game-" + Game.id;
+            document.location.href = "/game-" + Game.id + "-" + me.id;
         }
     }
 });

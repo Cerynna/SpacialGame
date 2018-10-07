@@ -1,4 +1,8 @@
 module.exports = function (app, games) {
+
+  const fs = require("fs");
+
+
   /* !!!! ROUTE PUBLIC !!!! */
   app.get('/', (req, res) => {
     let locals = {
@@ -20,4 +24,17 @@ module.exports = function (app, games) {
     res.render('game');
 
   });
+
+  app.get('/test-*', (req, res) => {
+    res.set('Content-Type', 'image/jpeg');
+
+    var img = fs.readFileSync('public/img/attack.png');
+    res.writeHead(200, {
+      'Content-Type': 'image/png'
+    });
+    res.end(img, 'binary');
+
+
+  });
+
 };
