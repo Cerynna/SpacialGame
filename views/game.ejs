@@ -4,16 +4,46 @@
 
 <div class="container" id="game">
     <div id="planetInfo">
+
         <h3 id="infoName"></h3>
         <div id="infoPosition"></div>
         <div id="infoSize"></div>
-        <div class="value">
-            <div id="value-Fer">fer</div>
-            <div id="value-Elec">elec</div>
-            <div id="value-Money">money</div>
+        <div class="row" id="ressource">
+            <div class="col-xs-2 value">
+                <div class="icon iron"></div>
+                <div id="value-Fer">255</div>
+            </div>
+            <div class="col-xs-2 value">
+                <div class="icon elec"></div>
+                <div id="value-Elec">255</div>
+            </div>
+            <div class="col-xs-2 value">
+                <div class="icon money"></div>
+                <div id="value-Money">255</div>
+            </div>
         </div>
+
         <div id="construct" class="row">
 
+        </div>
+        <div id="tooltipBatiment" class="neutre">
+            <div id="info">
+                <h3 id="nameBatiment">Construction</h3>
+                <div class="row">
+                    <div class="col-xs-11" id="descBatiment">
+                        Passe ta souri sur un batiment pour en savoir plus
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-11">
+                        <h3>Prix : </h3>
+                    </div>
+                    <div class="col-xs-3" id="prize-iron"></div>
+                    <div class="col-xs-3" id="prize-elec"></div>
+                    <div class="col-xs-3" id="prize-money"></div>
+                </div>
+            </div>
+            <div id="icon"></div>
         </div>
     </div>
     <div class="row" id="topBar">
@@ -99,8 +129,53 @@
     const playerElec = document.getElementById("Res-Elec");
     const playerMoney = document.getElementById("Res-Money");
 
+    const tooltipBatiment = document.getElementById("tooltipBatiment");
+
     let Game = false;
     let me;
+
+    const defBatiment = [{
+        "key": 0,
+        "name": "Attack",
+        "type": "atack",
+        "prize": {
+            0: 150,
+            1: 150,
+            2: 150
+        },
+        "desc": "Permet de récolter le fer et +1 attack"
+    }, {
+        "key": 1,
+        "name": "Exploration",
+        "type": "explo",
+        "prize": {
+            0: 150,
+            1: 150,
+            2: 150,
+
+        },
+        "desc": "Permet de récolter l'electricité et +2 rayon de vue"
+    }, {
+        "key": 2,
+        "name": "Commerce",
+        "type": "commerce",
+        "prize": {
+            0: 150,
+            1: 150,
+            2: 150
+        },
+        "desc": "Permet de recolter la money"
+    }, {
+        "key": 3,
+        "name": "Megapole",
+        "type": "megapole",
+        "prize": {
+            0: 1500,
+            1: 1500,
+            2: 1500
+        },
+        "desc": "Combinaison des trois batiment +5 attack +4 rayon de vue +10% recolte"
+    }]
 
 
     socket.emit('getGame', idGame);
@@ -370,29 +445,6 @@
         return result;
     }
 
-    function zoomPlanete(planete) {
-        const positionX = planete.position[0];
-        const positionY = planete.position[1];
-        contextMap.beginPath();
-        contextMap.arc(positionX, positionY, 20, 0, 2 * Math.PI, false);
-        contextMap.fillStyle = 'red';
-        contextMap.fill();
-        contextMap.lineWidth = 0;
-        contextMap.strokeStyle = '#fff';
-        contextMap.stroke();
-        setTimeout(() => {
-            contextMap.clearRect(positionX - 25, positionY - 25, 50,
-                50);
-            contextMap.beginPath();
-            contextMap.arc(positionX, positionY, planete.size, 0, 2 * Math.PI,
-                false);
-            contextMap.fillStyle = planete.color;
-            contextMap.fill();
-            contextMap.lineWidth = 0;
-            contextMap.strokeStyle = '#fff';
-            contextMap.stroke();
-        }, 2000)
-    }
 
     function getMousePos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
@@ -410,58 +462,69 @@
 
         if (planete !== false) {
             if (planete.connect === true) {
-                console.log('PLANETE !!!');
                 planetInfo.style.top = (evt.pageY - 30) + "px";
                 planetInfo.style.left = (evt.pageX - 30) + "px";
                 planetInfo.style.display = "block";
                 infoName.innerHTML = planete.name
-                infoPosition.innerHTML = planete.position
-                infoSize.innerHTML = planete.size;
+
+
+                if (planete.construct[0].player !== null) {
+                    valueFer.parentElement.classList.value =
+                        `col-xs-2 value player${planete.construct[1].player}`;
+                }
                 valueFer.innerHTML = planete.value.fer;
+
+                if (planete.construct[1].player !== null) {
+                    valueElec.parentElement.classList.value =
+                        `col-xs-2 value player${planete.construct[1].player}`;
+                }
                 valueElec.innerHTML = planete.value.elec;
+
+                if (planete.construct[2].player !== null) {
+                    valueMoney.parentElement.classList.value =
+                        `col-xs-2 value player${planete.construct[2].player}`;
+                }
                 valueMoney.innerHTML = planete.value.money;
-                listConstruct.innerHTML = "";
+
+
+
+                listConstruct.innerHTML = `<div class="col-xs-11"><h3>Construction</h3></div>`;
                 const megapole = planete.construct[3];
                 delete planete.construct[3];
                 for (key in planete.construct) {
                     if (planete.construct[key].player === null) {
                         listConstruct.innerHTML +=
                             `<div class="col-xs-2 batiment" onclick="getBatiment('${key}','${planete.position}' )">
-                                <div class="${planete.construct[key].type}"></div>
+                                <div class="${planete.construct[key].type}" onmouseover="viewTooltip('${key}','${planete.position}','neutre')"></div>
                                 </div>`;
                     } else {
                         listConstruct.innerHTML +=
                             `<div class="col-xs-2 batiment player${planete.construct[key].player}">
-                                <div class="${planete.construct[key].type}"></div>
+                                <div class="${planete.construct[key].type}" onmouseover="viewTooltip('${key}','${planete.position}', 'player${planete.construct[key].player}')"></div>
                                 </div>`;
                     }
                 }
 
                 if (megapole.player !== null) {
-                    console.log("MEGAPOLE PLAYER");
                     listConstruct.innerHTML +=
-                        `<div class="col-xs-11">Pallier Sup</div>
+                        `<div class="col-xs-11"><h3>Pallier Sup</h3></div>
                         <div class="col-xs-2 batiment player${planete.construct[key].player}">
-                                <div class="${megapole.type}"></div>
+                                <div class="${megapole.type}" onmouseover="viewTooltip('3','${planete.position}', 'player${planete.construct[key].player}')"></div>
                                 </div>`;
                 } else {
-                    console.log("MEGAPOLE NUll");
-                    console.log(me.key);
+
                     if (planete.construct[0].player == me.key && planete.construct[1].player == me.key &&
                         planete.construct[2].player ==
                         me.key) {
                         listConstruct.innerHTML +=
-                            `<div class="col-xs-11">Pallier Sup</div>
+                            `<div class="col-xs-11"><h3>Pallier Sup</h3></div>
                             <div class="col-xs-2 batiment" onclick="getBatiment('3','${planete.position}' )">
-                                <div class="megapole"></div>
+                                <div class="${megapole.type}" onmouseover="viewTooltip('3','${planete.position}','neutre')"></div>
                                 </div>`;
                     }
                 }
                 planete.construct[3] = megapole;
             }
-
-
-            /* zoomPlanete(planete); */
         }
 
         writeMessage(canvasMap, message);
@@ -471,114 +534,32 @@
         planetInfo.style.display = "none";
 
 
+        tooltipBatiment.classList.value = 'neutre';
+
+        valueFer.parentElement.classList.value = 'col-xs-2 value';
+        valueElec.parentElement.classList.value = 'col-xs-2 value';
+        valueMoney.parentElement.classList.value = 'col-xs-2 value';
     });
 
+    function viewTooltip(key, position, nameClass) {
+        tooltipBatiment.classList.value = nameClass;
+        const Name = document.getElementById("nameBatiment");
+        const Description = document.getElementById("descBatiment");
+        const prizeIron = document.getElementById("prize-iron");
+        const prizeElec = document.getElementById("prize-elec");
+        const prizeMoney = document.getElementById("prize-money");
+        const icon = document.getElementById("icon");
+
+        icon.classList.value = defBatiment[key].type;
+
+        Description.innerHTML = defBatiment[key].desc;
+        Name.innerHTML = defBatiment[key].name;
+
+        prizeIron.innerHTML = defBatiment[key].prize[0];
+        prizeElec.innerHTML = defBatiment[key].prize[1];
+        prizeMoney.innerHTML = defBatiment[key].prize[2];
 
 
-
-    /* canvas.addEventListener('click', function (evt) {
-
-        var mousePos = getMousePos(canvas, evt);
-        const planete = checkMouse(mousePos.x, mousePos.y)
-        console.log(planete);
-        if (planete !== false) {
-            console.log('PLANETE !!!');
-            planetInfo.style.top = (evt.pageY - 30) + "px";
-            planetInfo.style.left = (evt.pageX - 30) + "px";
-
-            infoName.innerHTML = planete.name
-            infoPosition.innerHTML = planete.position
-            infoSize.innerHTML = planete.size + "fer: " + planete.value.fer + " | elec: " + planete.value.elec + " | money: " + planete.value.money;
-        }
-
-    }, false); */
-
-
-
-    /* WAIT ANNIMATION !!!!
-
-    var rotateAngle = null;
-    var showGuideGrid = true; // set to false to hide the drawing assistance grid
-    var animateTheLoader = true; // set to false to disable animation and see the static drawing
-
-    window.onload = function() {
-
-        rotateAngle = 0;
-
-        if (animateTheLoader) {
-            loadingAnimation();
-        }
-        else {
-            loadingDrawing();
-        }
-    };
-
-    function loadingDrawing() {
-        contextMap.save();
-
-        contextMap.translate(150, 150);
-        contextMap.rotate(rotateAngle * Math.PI/180);
-        contextMap.translate(-150, -150);
-
-        contextMap.beginPath();
-        contextMap.strokeStyle = "white";
-        contextMap.lineWidth = 15;
-        contextMap.lineCap = "round";
-
-        contextMap.fillStyle = "rgba(255,255,255,1)";
-        contextMap.moveTo(150, 120);
-        contextMap.lineTo(150, 50);
-        contextMap.stroke();
-
-        contextMap.strokeStyle = "rgba(255,255,255,0.8)";
-        contextMap.moveTo(130, 130);
-        contextMap.lineTo(80, 80);
-        contextMap.stroke();
-
-        contextMap.strokeStyle = "rgba(255,255,255,0.5)";
-        contextMap.moveTo(120, 150);
-        contextMap.lineTo(50, 150);
-        contextMap.stroke();
-
-        contextMap.strokeStyle = "rgba(255,255,255,0.35)";
-        contextMap.moveTo(130, 170);
-        contextMap.lineTo(80, 220);
-        contextMap.stroke();
-
-        contextMap.strokeStyle = "rgba(255,255,255,0.2)";
-        contextMap.moveTo(150, 180);
-        contextMap.lineTo(150, 250);
-        contextMap.stroke();
-
-        contextMap.closePath();
-
-        contextMap.save();
-
-        contextMap.restore();
     }
-
-    function loadingAnimation() {
-        canvas.width = canvas.width; // redraw canvas for animation effect
-
-        loadingDrawing();
-
-        rotateAngle += 5;
-
-        if (rotateAngle > 360) {
-            rotateAngle = 5;
-        }
-
-        setTimeout(loadingAnimation, 30);
-
-    } */
-
-    /*  ADD IMG
-  
-    const img = new Image();
-      img.onload = function () {
-          contextMap.drawImage(img, 0, 0);
-      };
-      img.src = 'https://mdn.mozillademos.org/files/5395/backdrop.png';
-       */
 </script>
 <%- include('partials/footer'); -%>

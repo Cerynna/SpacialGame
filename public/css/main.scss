@@ -31,6 +31,7 @@ body {
   h3 {
     font-size: 1.5em;
     font-family: 'Orbitron', sans-serif;
+    text-transform: capitalize;
   }
 
   .row {
@@ -96,13 +97,15 @@ body {
 
   #game {
     background: #FFF;
+    padding: 0;
 
     #planetInfo {
       position: absolute;
-      min-width: 300px;
-      top: -400px;
-      left: -400px;
-      background: rgba(45, 45, 45, 0.8);
+      height: 270px;
+      width: 440px;
+      top: -0;
+      left: -0;
+      background: rgba(45, 45, 45, 0.8) no-repeat;
       padding: 10px;
       border-radius: 5px;
       border: 2px solid #000;
@@ -111,36 +114,180 @@ body {
       display: none;
       z-index: 500;
 
+      #tooltipBatiment {
+        height: 280px;
+        width: 300px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px 5px 0 10px;
 
+        z-index: -1;
 
-      .value {
-        [id*="value-"] {
-          padding: 2px 5px 10px 1.7em;
-          min-width: 66px;
-          font-size: 1.4em;
-          margin-bottom: 5px;
+        &.neutre {
+          background: linear-gradient(150deg, #ffffff00 60%, rgba(255, 255, 255, 0.8));
+        }
+
+        &.player0 {
+          background: linear-gradient(150deg, #ffffff00 60%, rgba(255, 0, 0, 0.8));
+        }
+
+        &.player1 {
+          background: linear-gradient(150deg, #ffffff00 60%, rgba(0, 0, 255, 0.8));
+        }
+
+        #info {
+          width: 180px;
+          position: absolute;
+          right: 0;
+
+          #nameBatiment {
+            text-align: right;
+            padding: 5px 5px;
+          }
+
+          #descBatiment {
+            text-align: center;
+            padding: 5px 2px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #FFF;
+            border-radius: 5px;
+            height: 100px;
+            color: #000;
+          }
+
+          h3 {
+            text-align: right;
+            padding: 5px 5px;
+          }
+
+          [id*="prize-"] {
+            padding: 5px 2px;
+            border: 2px solid #FFF;
+            margin-left: 10px;
+            color: #000;
+            border-radius: 5px;
+            padding-left: 20px;
+
+          }
+
+          #prize-iron {
+            background: url('../img/iron.png') rgba(255, 255, 255, 0.8) no-repeat;
+            background-size: 40%;
+          }
+
+          #prize-elec {
+            background: url('../img/elec.png') rgba(255, 255, 255, 0.8) no-repeat;
+            background-size: 40%;
+          }
+
+          #prize-money {
+            background: url('../img/money.png') rgba(255, 255, 255, 0.8) no-repeat;
+            background-size: 40%;
+          }
+        }
+
+        /* h3 {
+          text-align: right;
+        }
+
+        span {
+          max-width: 160px;
+          background: yellow;
+          right: 5px;
+          position: absolute;
+          text-align: center;
+          padding: 5px 2px;
+          background: rgba(255, 255, 255, 0.8);
+          border: 2px solid #FFF;
           color: #000;
-          max-width: 50px;
+        
+        } */
+
+        #icon {
+          width: 200px;
+          height: 280px;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          z-index: -1;
+
+          &.megapole {
+            background: url('../img/batiments/megapole.png') no-repeat;
+            background-size: contain;
+            background-position: 50px 150px;
+          }
+
+          &.atack {
+            background: url('../img/batiments/attack.png') no-repeat;
+            background-size: contain;
+            background-position: 50px 150px;
+          }
+
+          &.explo {
+            background: url('../img/batiments/explo.png') no-repeat;
+            background-size: contain;
+            background-position: 50px 150px;
+          }
+
+          &.commerce {
+            background: url('../img/batiments/commerce.png') no-repeat;
+            background-size: contain;
+            background-position: 50px 150px;
+          }
+        }
+      }
+
+      #ressource {
+        .value {
+          background: rgba(255, 255, 255, 0.8) no-repeat;
+          border: 2px solid #FFF;
           border-radius: 5px;
-        }
+          margin-right: 2px;
+          padding: 0;
 
-        #value-Fer {
-          background: url('../img/iron.png') rgba(255, 255, 255, 0.8) no-repeat;
-          background-size: contain;
-          border: 2px solid #FFF;
-        }
+          &.player0 {
+            border: 2px solid rgba(255, 0, 0, 1);
+            background: rgba(255, 0, 0, 0.5);
+          }
 
-        #value-Elec {
-          background: url('../img/elec.png') rgba(255, 255, 255, 0.8) no-repeat;
-          background-size: contain;
-          border: 2px solid #FFF;
-          ;
-        }
+          &.player1 {
+            border: 2px solid rgba(0, 0, 255, 1);
+            background: rgba(0, 0, 255, 0.5);
+          }
 
-        #value-Money {
-          background: url('../img/money.png') rgba(255, 255, 255, 0.8) no-repeat;
-          background-size: contain;
-          border: 2px solid #FFF;
+          .icon {
+            background: red;
+            width: 25px;
+            min-height: 25px;
+            position: absolute;
+
+            &.iron {
+              background: url('../img/iron.png') no-repeat;
+              background-size: contain;
+            }
+
+            &.elec {
+              background: url('../img/elec.png') no-repeat;
+              background-size: contain;
+            }
+
+            &.money {
+              background: url('../img/money.png') no-repeat;
+              background-size: contain;
+            }
+
+          }
+
+          [id*="value-"] {
+            min-width: 100px;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            color: #000;
+            border-radius: 5px;
+            padding-left: 28px;
+
+          }
         }
       }
 
@@ -149,14 +296,15 @@ body {
 
         .batiment {
           height: 60px;
-          border: 2px solid #FFF;
-          background: rgba(255, 255, 255, 0.8);
+          border: 2px solid #000;
+          background: rgba(45, 45, 45, 0.8);
+
           border-radius: 5px;
           margin: 5px 5px;
 
           &:hover {
-            border: 2px solid #000;
-            background: rgba(45, 45, 45, 0.8);
+            border: 2px solid #FFF;
+            background: rgba(255, 255, 255, 0.8);
           }
 
           &.player0 {
@@ -205,7 +353,6 @@ body {
     }
 
     #topBar {
-      background: yellow;
       margin-bottom: 0;
 
       .ressources {
@@ -217,6 +364,7 @@ body {
         color: #FFF;
         font-size: 1.3em;
         font-family: 'Orbitron', sans-serif;
+
         .iron,
         .elec,
         .money {
