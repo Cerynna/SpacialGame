@@ -72,6 +72,9 @@ function random_rgba() {
 function getGalaxy() {
   let Planetes = [];
   let y = 1;
+  let moyenIron = 0;
+  let moyenElec = 0;
+  let moyenMoney = 0;
   for (let i = 50; i < 1200; i += 100) {
     let u = 100
     if (y % 2) {
@@ -96,29 +99,36 @@ function getGalaxy() {
           "player": null,
         }
       ];
+      const size = Math.floor((Math.random() + 1) * 10);
       const Planete = {
         "name": i + " - " + u + " - " + y,
-        "size": Math.floor((Math.random() + 1) * 10),
+        "size": size,
         "position": [i, u],
         "color": randomValue.rgb,
         "construct": construct,
         "connect": false,
         "value": {
-          "fer": randomValue.red,
-          "elec": randomValue.blue,
-          "money": randomValue.green,
+          "fer": Math.floor((randomValue.red * size) / 8),
+          "elec": Math.floor((randomValue.blue * size) / 8),
+          "money": Math.floor((randomValue.green * size) / 20),
         }
       };
-
-
-
+      moyenIron += Math.floor((randomValue.red * size) / 8);
+      moyenElec += Math.floor((randomValue.blue * size) / 8);
+      moyenMoney += Math.floor((randomValue.green * size) / 20);
       Planetes.push(Planete);
     }
     y++;
   }
+  console.log(Planetes.length);
+
+  console.log(Math.floor(moyenIron / Planetes.length));
+  console.log(Math.floor(moyenElec / Planetes.length));
+  console.log(Math.floor(moyenMoney / Planetes.length));
 
   return Planetes;
 }
+getGalaxy();
 
 io.on('connection', (socket) => {
   io.emit('refreshUnivers', games);
@@ -212,9 +222,11 @@ io.on('connection', (socket) => {
         case '0':
           Game.playerIn[key].base = [250, 350];
           keyBase = findKeyPlanete(250, 350, Game.galaxy);
-          Game.galaxy[keyBase].value.fer = 255;
-          Game.galaxy[keyBase].value.elec = 255;
-          Game.galaxy[keyBase].value.money = 255;
+          Game.galaxy[keyBase].size = 22;
+          Game.galaxy[keyBase].color = "red";
+          Game.galaxy[keyBase].value.fer = 250;
+          Game.galaxy[keyBase].value.elec = 250;
+          Game.galaxy[keyBase].value.money = 150;
           Game.galaxy[keyBase].construct = [{
               "type": "atack",
               "player": key,
@@ -236,9 +248,11 @@ io.on('connection', (socket) => {
         case '1':
           Game.playerIn[key].base = [850, 350];
           keyBase = findKeyPlanete(850, 350, Game.galaxy);
-          Game.galaxy[keyBase].value.fer = 255;
-          Game.galaxy[keyBase].value.elec = 255;
-          Game.galaxy[keyBase].value.money = 255;
+          Game.galaxy[keyBase].size = 22;
+          Game.galaxy[keyBase].color = "blue";
+          Game.galaxy[keyBase].value.fer = 250;
+          Game.galaxy[keyBase].value.elec = 250;
+          Game.galaxy[keyBase].value.money = 150;
           Game.galaxy[keyBase].construct = [{
               "type": "atack",
               "player": key,

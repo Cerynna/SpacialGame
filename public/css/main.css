@@ -305,6 +305,10 @@ body input:focus {
   border: 2px solid yellow;
 }
 
+body .hidden {
+  display: none;
+}
+
 body #game {
   background: #FFF;
   padding: 0;
@@ -312,7 +316,7 @@ body #game {
 
 body #game #planetInfo {
   position: absolute;
-  height: 270px;
+  height: 290px;
   width: 440px;
   top: -0;
   left: -0;
@@ -327,8 +331,8 @@ body #game #planetInfo {
 }
 
 body #game #planetInfo #tooltipBatiment {
-  height: 280px;
-  width: 300px;
+  height: 300px;
+  width: 400px;
   position: absolute;
   top: 0;
   right: 0;
@@ -391,27 +395,28 @@ body #game #planetInfo #tooltipBatiment #info h3 {
 }
 
 body #game #planetInfo #tooltipBatiment #info [id*="prize-"] {
-  padding: 5px 2px;
+  padding: 2px 2px;
   border: 2px solid #FFF;
   margin-left: 10px;
   color: #000;
   border-radius: 5px;
-  padding-left: 20px;
+  padding-left: 35px;
+  height: 30px;
 }
 
 body #game #planetInfo #tooltipBatiment #info #prize-iron {
   background: url("../img/iron.png") rgba(255, 255, 255, 0.8) no-repeat;
-  background-size: 40%;
+  background-size: contain;
 }
 
 body #game #planetInfo #tooltipBatiment #info #prize-elec {
   background: url("../img/elec.png") rgba(255, 255, 255, 0.8) no-repeat;
-  background-size: 40%;
+  background-size: contain;
 }
 
 body #game #planetInfo #tooltipBatiment #info #prize-money {
   background: url("../img/money.png") rgba(255, 255, 255, 0.8) no-repeat;
-  background-size: 40%;
+  background-size: contain;
 }
 
 body #game #planetInfo #tooltipBatiment #icon {
@@ -556,6 +561,10 @@ body #game #planetInfo #construct .commerce {
 
 body #game #topBar {
   margin-bottom: 0;
+  position: fixed;
+  min-width: 450px;
+  background: #FFF;
+  border-radius: 5px;
 }
 
 body #game #topBar .ressources {
@@ -574,7 +583,7 @@ body #game #topBar .ressources .elec,
 body #game #topBar .ressources .money {
   min-width: 60px;
   height: 30px;
-  padding-left: 35px;
+  padding-left: 50px;
   padding-top: 15px;
 }
 
@@ -597,9 +606,8 @@ body #game #topBar .ressources .money {
 }
 
 body #game #board {
-  background: blue;
   margin-bottom: 0;
-  padding: 10px 7px;
+  padding: 60px 10px 0px 10px;
 }
 
 body #game #board #Brouillard {
@@ -612,6 +620,7 @@ body #game #board #Map {
   background: #0c0f13;
   height: 700px;
   width: 1200px;
+  border-radius: 10px;
 }
 
 body #game #tools {
