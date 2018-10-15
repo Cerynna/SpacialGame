@@ -17,6 +17,7 @@ const server = {
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+
 app.use(session({
   secret: 'cerynnaroxx',
   name: 'spacialGame',
@@ -128,7 +129,7 @@ function getGalaxy() {
 
   return Planetes;
 }
-getGalaxy();
+
 
 io.on('connection', (socket) => {
   io.emit('refreshUnivers', games);
