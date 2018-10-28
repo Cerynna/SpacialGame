@@ -15,14 +15,20 @@ const valueMoney = document.getElementById("value-Money");
 const listConstruct = document.getElementById("construct");
 const infoSize = document.getElementById("infoSize");
 const listOrder = document.querySelectorAll(".order");
+const Timer = document.getElementById('Timer');
 
 const playerIron = document.getElementById("Res-Iron");
 const playerElec = document.getElementById("Res-Elec");
 const playerMoney = document.getElementById("Res-Money");
 
+const startTurn = document.getElementById("startTurn");
+const sendOrder = document.getElementById("sendOrder");
+
 
 let Game = false;
 let me;
+let Turn;
+let inter = false;
 const Tooltips = {
     "name": document.getElementById("nameBatiment"),
     "desc": document.getElementById("descBatiment"),
@@ -89,16 +95,55 @@ const defBatiment = [{
     "desc": "Combinaison des trois batiment +5 attack +4 rayon de vue +10% recolte"
 }]
 
+/* socket.emit('OneTurn', idGame); */
+
+socket.on('turnStart', (Turn, Game) => {
+    Turn = Turn;
+    Game = Game;
+    setTimer(Turn.start, Turn.end);
+});
+socket.on('stopTurn', (GamefromServer) => {
+    Game = GamefromServer;
+    setTimeout(() => {
+        drawGame(Game);
+    }, (500 + (500 * me.key)));
+
+});
 
 socket.emit('getGame', idGame);
-
 socket.on('setGame', function (GamefromServer) {
     Game = GamefromServer;
+    drawGame(Game);
+
+});
+startTurn.addEventListener('click', (event) => {
+    socket.emit('newTurn', idGame);
+});
+sendOrder.addEventListener('click', (event) => {
+    socket.emit('sendOrder', idGame, compilOrder());
+    clearInterval(inter);
+
+});
+
+function drawGame(Game) {
     for (key in Game.playerIn) {
         if (Game.playerIn[key].id === idPlayer) {
             me = Game.playerIn[key];
             me.key = key;
-
+            switch (parseInt(key)) {
+                case 0:
+                    canvasMap.style.border = `5px solid red`;
+                    break;
+                case 1:
+                    canvasMap.style.border = `5px solid blue`;
+                    break;
+                case 2:
+                    canvasMap.style.border = `5px solid green`;
+                    break;
+                case 3:
+                    canvasMap.style.border = `5px solid yellow`;
+                    break;
+            }
             playerIron.innerHTML = me.Res.Iron;
             playerElec.innerHTML = me.Res.Elec;
             playerMoney.innerHTML = me.Res.Money;
@@ -112,7 +157,39 @@ socket.on('setGame', function (GamefromServer) {
             drawPlanete(Game.galaxy[idPlanete]);
         }
     }
-});
+
+}
+
+function setTimer(start, end) {
+
+    end = end - (me.key * 500);
+    let timer = (end - start);
+
+    inter = setInterval(() => {
+        if (start >= end) {
+            socket.emit('sendOrder', idGame, compilOrder());
+            clearInterval(inter);
+        }
+        let pourcent = Math.floor(100 - (((end - start) * 100) / timer));
+        Timer.style.width = pourcent + '%';
+        Timer.innerHTML = Math.floor(((end - start) / 1000) + 1) + 's';
+        start += 100;
+    }, 100);
+
+}
+
+function compilOrder() {
+    let orders = [];
+    [].forEach.call(listOrder, (order) => {
+        if (order.value != "") {
+            orders.push(order.value);
+        }
+    })
+    return {
+        player: me,
+        orders: orders,
+    }
+}
 
 function exploration(playerKey, galaxy) {
     let result = [];
@@ -159,7 +236,7 @@ function drawPlanete(planete) {
     contextMap.beginPath();
     const img = new Image();
 
-    img.src = `img/planets/${planete.size /* + ( Math.floor(Math.random() * 3 ) + 1 ) */ }.png`;
+    img.src = `img/planets/${planete.size}.png`;
     img.onload = function () {
         contextMap.drawImage(img, planete.position[0] - 30, planete.position[1] - 30, 40 + planete.size, 40 +
             planete.size);
@@ -201,7 +278,7 @@ function addBatiment(planete) {
                 case 'megapole':
                     img.src = `img/batiments/${planete.construct[key].player}/megapole.png`;
                     img.onload = function () {
-                        contextMap.drawImage(img, planete.position[0] - 30, planete.position[1] - 30, 80, 80);
+                        contextMap.drawImage(img, planete.position[0] - 40, planete.position[1] - 40, 80, 80);
                     };
                     break;
             }

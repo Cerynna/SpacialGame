@@ -117,13 +117,27 @@
 
         </div>
         <div class="col-xs">
-            TOOLS
+            <div class="row">
+                <div class="col" id="barTimer">
+                    <div id="Timer">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="btn" id="startTurn">Lancer la Game</div>
+                </div>
+
+                <div class="col">
+                    <div class="btn" id="sendOrder">Valider mes ordres</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/game.js"></script>
 <script>
-    
+
 </script>
 <%- include('partials/footer'); -%>

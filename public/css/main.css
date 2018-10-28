@@ -627,4 +627,26 @@ body #game #tools {
   background: green;
   padding: 20px;
 }
+
+body #game #tools #barTimer {
+  height: 50px;
+  width: 100%;
+  background: gray;
+  border: 2px solid red;
+  border-radius: 10px;
+  position: relative;
+}
+
+body #game #tools #barTimer #Timer {
+  position: absolute;
+  margin: 0 auto;
+  bottom: 0;
+  left: 0;
+  font-size: 40px;
+  padding: 5px 0;
+  color: #FFF;
+  width: 0%;
+  background: red;
+  text-align: right;
+}
 /*# sourceMappingURL=main.css.map */

@@ -14,6 +14,10 @@ const server = {
   md5: md5('Server'),
   color: '#F5F5F5',
 };
+const timerTurm = {
+  order: 60 * 1000,
+  wait: 10 * 1000,
+}
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -64,11 +68,6 @@ function random_rgba() {
   };
 
 }
-
-
-
-
-
 
 function getGalaxy() {
   let Planetes = [];
@@ -130,6 +129,13 @@ function getGalaxy() {
   return Planetes;
 }
 
+function findKeyPlanete(positionX, positionY, Galaxy) {
+  for (let key in Galaxy) {
+    if (positionX == Galaxy[key].position[0] && positionY == Galaxy[key].position[1]) {
+      return key;
+    }
+  }
+}
 
 io.on('connection', (socket) => {
   io.emit('refreshUnivers', games);
@@ -288,19 +294,113 @@ io.on('connection', (socket) => {
   socket.on('getGame', (idGame) => {
     var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
     io.emit('setGame', Game);
+
   });
 
+  socket.on('newTurn', (idGame) => {
+    var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
 
+    if (Game.turn == undefined) {
+      Game.turn = []
+    }
+
+    var time = new Date();
+    let Turn = {
+      id: Game.turn.length,
+      start: Date.now(),
+      end: time.setSeconds(time.getSeconds() + (timerTurm.order / 1000)),
+      order: [],
+    }
+    Game.turn.push(Turn);
+    SaveGame(idGame, Game)
+
+    io.emit('turnStart', Turn, Game);
+  });
+
+  socket.on('sendOrder', (idGame, order) => {
+    var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
+    if (Game.turn[Game.turn.length - 1].order.length < Game.size) {
+      Game.turn[Game.turn.length - 1].order.push(order)
+      Game.playerIn[order.player.key] = order.player;
+    }
+    if (Game.turn[Game.turn.length - 1].order.length == Game.size) {
+      console.log("****************************************\nFULL ORDER !!!!!\n****************************************\n")
+      Game.turn[Game.turn.length - 1].order.forEach(playerOrder => {
+        playerOrder.orders.forEach(orderPlayer => {
+          OrderParse = orderPlayer.split(' - ');
+          OrderParse[2] = OrderParse[1].split(',').pop();
+          OrderParse[1] = OrderParse[1].split(',').shift();
+          console.log(OrderParse);
+          const keyPlanet = findKeyPlanete(OrderParse[1], OrderParse[2], Game.galaxy);
+          Game.galaxy[keyPlanet].construct[OrderParse[0]].player = playerOrder.player.key;
+
+        });
+
+      });
+      getRes(idGame).forEach((playerRes, key) => {
+        Game.playerIn[key].Res.Iron = playerRes.fer;
+        Game.playerIn[key].Res.Elec = playerRes.elec;
+        Game.playerIn[key].Res.Money = playerRes.money;
+      })
+      io.emit('stopTurn', Game);
+    }
+    SaveGame(idGame, Game);
+  })
+
+  function getRes(idGame) {
+    var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
+    let results = [];
+    Game.galaxy.forEach(planet => {
+      planet.construct.forEach(batiment => {
+        if (batiment.player != null) {
+
+          if (results[batiment.player] == undefined) {
+            results[batiment.player] = {
+              fer: 0,
+              elec: 0,
+              money: 0,
+            };
+          }
+          switch (batiment.type) {
+            case "atack":
+              results[batiment.player].fer += planet.value.fer;
+              break;
+            case "explo":
+              results[batiment.player].elec += planet.value.elec;
+              break;
+            case "commerce":
+              results[batiment.player].money += planet.value.money;
+              break;
+            case "megapole":
+              results[batiment.player].fer += planet.value.fer;
+              results[batiment.player].elec += planet.value.elec;
+              results[batiment.player].money += planet.value.money;
+              break;
+
+          }
+        }
+      })
+
+    });
+    return results;
+
+  }
+
+
+
+  function SaveGame(idGame, Game) {
+
+    fs.writeFile("Games/" + idGame + ".json", JSON.stringify(Game), (err) => {
+      if (err) throw err;
+      console.log('The file has been saved!');
+    });
+  }
 
 });
 
-function findKeyPlanete(positionX, positionY, Galaxy) {
-  for (let key in Galaxy) {
-    if (positionX == Galaxy[key].position[0] && positionY == Galaxy[key].position[1]) {
-      return key;
-    }
-  }
-}
+
+
+
 
 http.listen(1337, function () {
   console.log('listening on *:1337');
