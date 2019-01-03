@@ -2,9 +2,41 @@
 <%- include('partials/modal'); -%>
 
 
-<div class="container" id="game">
-    <div id="planetInfo">
 
+<div id="game">
+    <div class="row" id="topBar">
+        <div class="col-xs-1 ressources">
+            <div id="Res-Iron" class="iron"></div>
+        </div>
+        <div class="col-xs-1 ressources">
+            <div id="Res-Elec" class="elec"></div>
+        </div>
+        <div class="col-xs-1 ressources">
+            <div id="Res-Money" class="money"></div>
+        </div>
+        <div class="col-xs-1 ressources">
+            <div id="Res-PV" class="money"></div>
+        </div>
+        <div class="col-xs-1 ressources">
+            <div class="btn" id="startTurn">Start</div>
+        </div>
+        <div class="col-xs-1 ressources">
+            <div class="btn" id="sendOrder">Send</div>
+        </div>
+        <div class="col-xs ressources">
+
+            <div id="barTimer">
+                <div id="Timer">
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="board">
+        <canvas id="Map" width="100%" height="100%"></canvas>
+    </div>
+    <div id="planetInfo">
         <h3 id="infoName"></h3>
         <div id="infoPosition"></div>
         <div id="infoSize"></div>
@@ -12,17 +44,17 @@
             <div class="row">
                 <div class="col-xs-3 value">
                     <div class="icon iron"></div>
-                    <div id="value-Fer">255</div>
+                    <div id="value-Fer">0</div>
                 </div>
                 <div class="col-xs-3 value">
                     <div class="icon elec"></div>
-                    <div id="value-Elec">255</div>
+                    <div id="value-Elec">0</div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-3 value">
                     <div class="icon money"></div>
-                    <div id="value-Money">255</div>
+                    <div id="value-Money">0</div>
                 </div>
             </div>
         </div>
@@ -37,12 +69,13 @@
                         Passe ta souri sur un batiment pour en savoir plus
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs">
-                        <h3>Prix : </h3>
-                    </div>
-                </div>
+
                 <div id="prize">
+                    <div class="row">
+                        <div class="col-xs">
+                            <h3>Prix : </h3>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-xs-5"></div>
                         <div class="col-xs" id="prize-iron"></div>
@@ -59,30 +92,51 @@
                         <div class="col-xs-1"></div>
                     </div>
                 </div>
+                <div id="actionAttack">
+                    <div class="row">
+                        <div class="col-xs">
+                            <h3>Attaque : </h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-5"></div>
+                        <div class="col-xs" id="prize-attack"></div>
+                        <div class="col-xs-1"></div>
+                    </div>
+                </div>
             </div>
             <div id="icon"></div>
         </div>
     </div>
-    <div class="row" id="topBar">
-        <div class="col-xs-3 ressources">
-            <div id="Res-Iron" class="iron"></div>
+    <div id="magic">
+        <div id="deathRay" class="round">
+            <div class="nb">
+            </div>
         </div>
-        <div class="col-xs-3 ressources">
-            <div id="Res-Elec" class="elec"></div>
-        </div>
-        <div class="col-xs-3 ressources">
-            <div id="Res-Money" class="money"></div>
+        <div id="batiments">
+            <div id="attack" class="round">
+                <div class="nb">
+                </div>
+            </div>
+            <div id="explo" class="round">
+                <div class="nb">
+                </div>
+            </div>
+            <div id="commerce" class="round">
+                <div class="nb">
+                </div>
+            </div>
+            <div id="megapole" class="round">
+                <div class="nb">
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row" id="board">
-        <div class="col-xs">
-            <canvas id="Map" width="1200" height="700">
-
-            </canvas>
+    <div id="order">
+        <div class="header">
+            Ordres
         </div>
-    </div>
-    <div class="row" id="tools">
-        <div class="col-xs" id="order">
+        <div class="content">
             <div class="row">
                 <div class="col-xs-10"><input type="text" id="order-1" class="order"></div>
                 <div class="col-xs">
@@ -114,27 +168,41 @@
                 </div>
             </div>
 
-
         </div>
-        <div class="col-xs">
-            <div class="row">
-                <div class="col" id="barTimer">
-                    <div id="Timer">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="btn" id="startTurn">Lancer la Game</div>
-                </div>
 
-                <div class="col">
-                    <div class="btn" id="sendOrder">Valider mes ordres</div>
+
+    </div>
+
+</div>
+<!-- 
+<div class="container" id="game">
+    
+    
+    <div class="row" id="board">
+        <canvas id="Map" width="1200" height="700">
+        </canvas>
+    </div>
+    
+        <div class="row">
+            
+            <div class="col-xs">
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="btn" id="startTurn">Lancer la Game</div>
+                    </div>
+
+                    <div class="col">
+                        <div class="btn" id="sendOrder">Valider mes ordres</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+</div> -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/game.js"></script>
 <script>

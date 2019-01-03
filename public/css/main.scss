@@ -14,7 +14,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 2px;
+  height: 2px;
   background-color: #F5F5F5;
 }
 
@@ -100,12 +101,15 @@ body {
   }
 
   #game {
-    background: #FFF;
     padding: 0;
+    width: 100vw;
+    height: 100vh;
+
+
 
     #planetInfo {
       position: absolute;
-      height: 290px;
+      height: 340px;
       width: 440px;
       top: -0;
       left: -0;
@@ -119,7 +123,7 @@ body {
       z-index: 500;
 
       #tooltipBatiment {
-        height: 300px;
+        height: 350px;
         width: 400px;
         position: absolute;
         top: 0;
@@ -148,6 +152,7 @@ body {
           #nameBatiment {
             text-align: right;
             padding: 5px 5px;
+
           }
 
           #descBatiment {
@@ -163,6 +168,22 @@ body {
           h3 {
             text-align: right;
             padding: 5px 5px;
+          }
+
+          #actionAttack {
+
+            background: green;
+            width: 90%;
+            height: 100px;
+            display: none;
+            margin: 10px;
+
+            #prize-attack {
+              background: url('../img/deathRay.png') rgba(255, 255, 255, 0.8) no-repeat;
+              background-size: contain;
+            }
+
+
           }
 
           [id*="prize-"] {
@@ -190,6 +211,7 @@ body {
             background: url('../img/money.png') rgba(255, 255, 255, 0.8) no-repeat;
             background-size: contain;
           }
+
         }
 
         /* h3 {
@@ -359,10 +381,14 @@ body {
 
     #topBar {
       margin-bottom: 0;
+      padding: 0 50px;
       position: fixed;
-      min-width: 450px;
+      top: 0;
+      right: 8px;
+      min-width: 100%;
       background: #FFF;
       border-radius: 5px;
+      z-index: 5;
 
       .ressources {
         background: rgba(45, 45, 45, 0.8) no-repeat;
@@ -401,55 +427,137 @@ body {
           background-position: 0% 50%;
         }
 
+        #barTimer {
+          height: 50px;
+          width: 100%;
+          background: gray;
+          border: 2px solid red;
+          border-radius: 10px;
+          position: relative;
 
+          #Timer {
+            position: absolute;
+            margin: 0 auto;
+            bottom: 0;
+            left: 0;
+            font-size: 40px;
+            padding: 5px 0;
+            color: #FFF;
+            width: 0%;
+            background: red;
+            text-align: right;
+          }
+        }
       }
     }
 
-    #board {
-      margin-bottom: 0;
-      padding: 60px 10px 0px 10px;
+    #order {
+      position: fixed;
+      z-index: 5;
+      bottom: 0;
+      right: 0;
+      cursor: pointer;
 
-      #Brouillard {
-        height: 700px;
-        width: 1200px;
-        position: absolute;
-      }
+      /* height: 10px; */
 
-      #Map {
-        background: rgb(12, 15, 19);
-        height: 700px;
-        width: 1200px;
-        border-radius: 10px;
-      }
-    }
+      .header {
+        border-radius: 5px;
+        background: blue;
+        font-size: 1.5em;
+        padding: 0 10px;
+        height: 1.5em;
+        line-height: 1.5em;
 
-    #tools {
-      background: green;
-      padding: 20px;
-
-      #barTimer {
-        height: 50px;
-        width: 100%;
-        background: gray;
-        border: 2px solid red;
-        border-radius: 10px;
-        position: relative;
-
-        #Timer {
-          position: absolute;
-          margin: 0 auto;
-          bottom: 0;
-          left: 0;
-          font-size: 40px;
-          padding: 5px 0;
+        &:hover {
           color: #FFF;
-          width: 0%;
-          background: red;
-          text-align: right;
         }
       }
 
+      .content {
+        background: yellow;
+        padding: 10px;
+        display: block;
+      }
     }
+
+    #magic {
+      width: 100px;
+      position: fixed;
+      top: 80px;
+      right: 10px;
+      z-index: 5000;
+
+      .round {
+        padding: 10px;
+        height: 30px;
+        width: 30px;
+        margin: 10px 10px;
+        border-radius: 50%;
+        border: 2px solid #FFF;
+        position: relative;
+
+        .nb {
+          color: white;
+          background: black;
+          border: 2px solid #FFF;
+          position: absolute;
+          bottom: -10px;
+          right: 0;
+          padding: 3px 5px;
+          border-radius: 5px;
+
+        }
+      }
+
+      #megapole {
+        background: rgba(0, 0, 0, .5) url('../img/batiments/megapole.png') no-repeat;
+        background-size: contain;
+        background-position: 50% 50%;
+      }
+
+      #attack {
+        background: rgba(0, 0, 0, .5) url('../img/batiments/attack.png') no-repeat;
+        background-size: contain;
+        background-position: 50% 50%;
+      }
+
+      #explo {
+        background: rgba(0, 0, 0, .5) url('../img/batiments/explo.png') no-repeat;
+        background-size: contain;
+        background-position: 50% 50%;
+      }
+
+      #commerce {
+        background: rgba(0, 0, 0, .5) url('../img/batiments/commerce.png') no-repeat;
+        background-size: contain;
+        background-position: 50% 50%;
+      }
+
+      #deathRay {
+        background: rgba(255, 0, 0, .5) url('../img/deathRay.png') no-repeat center center;
+        background-size: 60%;
+      }
+    }
+
+
+
+    #board {
+      height: 100vh;
+      width: 100vw;
+      z-index: 1;
+
+      #Map {
+        position: absolute;
+        background: rgb(12, 15, 19);
+        border-radius: 10px;
+        top: 0;
+        left: 0;
+        margin-top: 70px;
+
+
+      }
+    }
+
   }
 
 }

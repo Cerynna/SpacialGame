@@ -229,7 +229,8 @@ table {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 2px;
+  height: 2px;
   background-color: #F5F5F5;
 }
 
@@ -310,13 +311,14 @@ body .hidden {
 }
 
 body #game {
-  background: #FFF;
   padding: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 body #game #planetInfo {
   position: absolute;
-  height: 290px;
+  height: 340px;
   width: 440px;
   top: -0;
   left: -0;
@@ -331,7 +333,7 @@ body #game #planetInfo {
 }
 
 body #game #planetInfo #tooltipBatiment {
-  height: 300px;
+  height: 350px;
   width: 400px;
   position: absolute;
   top: 0;
@@ -392,6 +394,19 @@ body #game #planetInfo #tooltipBatiment #info #descBatiment {
 body #game #planetInfo #tooltipBatiment #info h3 {
   text-align: right;
   padding: 5px 5px;
+}
+
+body #game #planetInfo #tooltipBatiment #info #actionAttack {
+  background: green;
+  width: 90%;
+  height: 100px;
+  display: none;
+  margin: 10px;
+}
+
+body #game #planetInfo #tooltipBatiment #info #actionAttack #prize-attack {
+  background: url("../img/deathRay.png") rgba(255, 255, 255, 0.8) no-repeat;
+  background-size: contain;
 }
 
 body #game #planetInfo #tooltipBatiment #info [id*="prize-"] {
@@ -561,10 +576,14 @@ body #game #planetInfo #construct .commerce {
 
 body #game #topBar {
   margin-bottom: 0;
+  padding: 0 50px;
   position: fixed;
-  min-width: 450px;
+  top: 0;
+  right: 8px;
+  min-width: 100%;
   background: #FFF;
   border-radius: 5px;
+  z-index: 5;
 }
 
 body #game #topBar .ressources {
@@ -605,30 +624,7 @@ body #game #topBar .ressources .money {
   background-position: 0% 50%;
 }
 
-body #game #board {
-  margin-bottom: 0;
-  padding: 60px 10px 0px 10px;
-}
-
-body #game #board #Brouillard {
-  height: 700px;
-  width: 1200px;
-  position: absolute;
-}
-
-body #game #board #Map {
-  background: #0c0f13;
-  height: 700px;
-  width: 1200px;
-  border-radius: 10px;
-}
-
-body #game #tools {
-  background: green;
-  padding: 20px;
-}
-
-body #game #tools #barTimer {
+body #game #topBar .ressources #barTimer {
   height: 50px;
   width: 100%;
   background: gray;
@@ -637,7 +633,7 @@ body #game #tools #barTimer {
   position: relative;
 }
 
-body #game #tools #barTimer #Timer {
+body #game #topBar .ressources #barTimer #Timer {
   position: absolute;
   margin: 0 auto;
   bottom: 0;
@@ -648,5 +644,106 @@ body #game #tools #barTimer #Timer {
   width: 0%;
   background: red;
   text-align: right;
+}
+
+body #game #order {
+  position: fixed;
+  z-index: 5;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+  /* height: 10px; */
+}
+
+body #game #order .header {
+  border-radius: 5px;
+  background: blue;
+  font-size: 1.5em;
+  padding: 0 10px;
+  height: 1.5em;
+  line-height: 1.5em;
+}
+
+body #game #order .header:hover {
+  color: #FFF;
+}
+
+body #game #order .content {
+  background: yellow;
+  padding: 10px;
+  display: block;
+}
+
+body #game #magic {
+  width: 100px;
+  position: fixed;
+  top: 80px;
+  right: 10px;
+  z-index: 5000;
+}
+
+body #game #magic .round {
+  padding: 10px;
+  height: 30px;
+  width: 30px;
+  margin: 10px 10px;
+  border-radius: 50%;
+  border: 2px solid #FFF;
+  position: relative;
+}
+
+body #game #magic .round .nb {
+  color: white;
+  background: black;
+  border: 2px solid #FFF;
+  position: absolute;
+  bottom: -10px;
+  right: 0;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+body #game #magic #megapole {
+  background: rgba(0, 0, 0, 0.5) url("../img/batiments/megapole.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #magic #attack {
+  background: rgba(0, 0, 0, 0.5) url("../img/batiments/attack.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #magic #explo {
+  background: rgba(0, 0, 0, 0.5) url("../img/batiments/explo.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #magic #commerce {
+  background: rgba(0, 0, 0, 0.5) url("../img/batiments/commerce.png") no-repeat;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
+body #game #magic #deathRay {
+  background: rgba(255, 0, 0, 0.5) url("../img/deathRay.png") no-repeat center center;
+  background-size: 60%;
+}
+
+body #game #board {
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+}
+
+body #game #board #Map {
+  position: absolute;
+  background: #0c0f13;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  margin-top: 70px;
 }
 /*# sourceMappingURL=main.css.map */

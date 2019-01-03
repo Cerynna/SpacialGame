@@ -1,12 +1,25 @@
+const board = document.getElementById('board');
 const canvasMap = document.getElementById('Map');
 const contextMap = canvasMap.getContext('2d');
 
-contextMap.scale(1, 1);
+document.addEventListener('keydown', (e) => {
+    console.log("keydown");
+    if (!e.repeat)
+        console.log(`first keydown event. key property value is "${e.key}"`);
+    else
+        console.log(`keydown event repeats. key property value is "${e.key}"`);
+});
+
+let zoom = 1;
+
 
 const socket = io.connect('http://localhost:1337');
 const idGame = window.location.pathname.split("-")[1];
 const idPlayer = window.location.pathname.split("-")[2];
 const planetInfo = document.getElementById("planetInfo");
+
+const actionAttack = document.getElementById("actionAttack");
+
 const infoName = document.getElementById("infoName");
 const infoPosition = document.getElementById("infoPosition");
 const valueFer = document.getElementById("value-Fer");
@@ -20,12 +33,14 @@ const Timer = document.getElementById('Timer');
 const playerIron = document.getElementById("Res-Iron");
 const playerElec = document.getElementById("Res-Elec");
 const playerMoney = document.getElementById("Res-Money");
+const playerPV = document.getElementById("Res-PV");
 
 const startTurn = document.getElementById("startTurn");
 const sendOrder = document.getElementById("sendOrder");
 
 
 let Game = false;
+let loading = false;
 let me;
 let Turn;
 let inter = false;
@@ -41,7 +56,7 @@ const Tooltips = {
     "icon": document.getElementById("icon"),
     "main": document.getElementById("tooltipBatiment"),
     reset: function () {
-        this.name.innerHTML = "Construction";
+        this.name.innerHTML = "Batiments";
         this.desc.innerHTML = "Passe ta souri sur un batiment pour en savoir plus";
         this.prize.iron.innerHTML = "";
         this.prize.elec.innerHTML = "";
@@ -49,8 +64,20 @@ const Tooltips = {
         this.prize.main.classList.value = "";
         this.icon.classList.value = "";
         this.main.classList.value = "neutre";
+        actionAttack.style.display = "none";
     }
 }
+
+const Magic = {
+    "main": document.getElementById("magic"),
+    "deathRay": document.querySelector("#deathRay .nb"),
+    "batiments": {
+        attack: document.querySelector("#batiments #attack .nb"),
+        explo: document.querySelector("#batiments #explo .nb"),
+        commerce: document.querySelector("#batiments #commerce .nb"),
+        megapole: document.querySelector("#batiments #megapole .nb"),
+    },
+};
 
 const defBatiment = [{
     "key": 0,
@@ -92,9 +119,24 @@ const defBatiment = [{
         1: 1500,
         2: 1500
     },
-    "desc": "Combinaison des trois batiment +5 attack +4 rayon de vue +10% recolte"
+    "desc": "Combinaison des trois batiment +5 attack de vue +100% recolte"
 }]
 
+
+
+
+function viewport() {
+    var e = window,
+        a = 'inner';
+    if (!('innerWidth' in window)) {
+        a = 'client';
+        e = document.documentElement || document.body;
+    }
+    return {
+        width: e[a + 'Width'],
+        height: e[a + 'Height']
+    }
+}
 /* socket.emit('OneTurn', idGame); */
 
 socket.on('turnStart', (Turn, Game) => {
@@ -105,14 +147,20 @@ socket.on('turnStart', (Turn, Game) => {
 socket.on('stopTurn', (GamefromServer) => {
     Game = GamefromServer;
     setTimeout(() => {
+        clearOrders();
         drawGame(Game);
     }, (500 + (500 * me.key)));
 
 });
 
 socket.emit('getGame', idGame);
+
 socket.on('setGame', function (GamefromServer) {
     Game = GamefromServer;
+    loading = true;
+    canvasMap.width = ((700 * Game.size) - (50) * zoom) * zoom;
+    canvasMap.height = ((350 * Game.size)) * zoom;
+    contextMap.scale(zoom, zoom);
     drawGame(Game);
 
 });
@@ -126,10 +174,14 @@ sendOrder.addEventListener('click', (event) => {
 });
 
 function drawGame(Game) {
-    for (key in Game.playerIn) {
+    contextMap.clearRect(0, 0, (viewport().width) * zoom, (viewport().height) * zoom);
+
+    for (let key in Game.playerIn) {
         if (Game.playerIn[key].id === idPlayer) {
             me = Game.playerIn[key];
             me.key = key;
+            console.log(me);
+
             switch (parseInt(key)) {
                 case 0:
                     canvasMap.style.border = `5px solid red`;
@@ -147,6 +199,12 @@ function drawGame(Game) {
             playerIron.innerHTML = me.Res.Iron;
             playerElec.innerHTML = me.Res.Elec;
             playerMoney.innerHTML = me.Res.Money;
+            playerPV.innerHTML = me.Res.PV;
+            Magic.deathRay.innerHTML = me.Res.magic.deathRay;
+            Magic.batiments.attack.innerHTML = me.stat.batiment.attack;
+            Magic.batiments.explo.innerHTML = me.stat.batiment.explo;
+            Magic.batiments.commerce.innerHTML = me.stat.batiment.commerce;
+            Magic.batiments.megapole.innerHTML = me.stat.batiment.megapole;
         }
     }
 
@@ -193,38 +251,53 @@ function compilOrder() {
 
 function exploration(playerKey, galaxy) {
     let result = [];
-    for (keyPlanet in galaxy) {
+    for (let keyPlanet in galaxy) {
         if (galaxy[keyPlanet].construct[1].player == playerKey) {
             result.push(findConnectPlanet(galaxy[keyPlanet].position[0], galaxy[keyPlanet].position[1]))
         }
 
     }
     let wait = [];
-    for (key in result) {
-        for (id in result[key]) {
+    for (let key in result) {
+        for (let id in result[key]) {
             wait.push(result[key][id])
         }
     }
     return wait;
 }
 
+function clearOrders() {
+    console.log("DELETES ALL ORDERS");
+    let inputs = document.querySelectorAll('input.order');
+    for (let key in inputs) {
+        if (typeof key != "number" && key.length == 1) {
+            /* deleteOrder(parseInt(key) + 1); */
+            inputs[key].value = "";
+        }
+    }
+}
+
+
 function deleteOrder(nbInput) {
 
     let Order = document.getElementById(`order-${nbInput}`);
-    Order.parse = Order.value.split(' - ');
-    Order.parse[2] = Order.parse[1].split(',').pop();
-    Order.parse[1] = Order.parse[1].split(',').shift();
+    if (Order.value.length > 0) {
+        Order.parse = Order.value.split(' - ');
+        Order.parse[2] = Order.parse[1].split(',').pop();
+        Order.parse[1] = Order.parse[1].split(',').shift();
 
-    const keyPlanet = findKeyPlanete(Order.parse[1], Order.parse[2]);
+        const keyPlanet = findKeyPlanete(Order.parse[1], Order.parse[2]);
 
-    Game.galaxy[keyPlanet].construct[Order.parse[0]].player = null;
+        Game.galaxy[keyPlanet].construct[Order.parse[0]].player = null;
 
-    drawPlanete(Game.galaxy[keyPlanet]);
-    me.Res.Iron += defBatiment[Order.parse[0]].prize[0];
-    me.Res.Elec += defBatiment[Order.parse[0]].prize[1];
-    me.Res.Money += defBatiment[Order.parse[0]].prize[2];
-    RefreshRes();
-    Order.value = "";
+        drawPlanete(Game.galaxy[keyPlanet]);
+        me.Res.Iron += defBatiment[Order.parse[0]].prize[0];
+        me.Res.Elec += defBatiment[Order.parse[0]].prize[1];
+        me.Res.Money += defBatiment[Order.parse[0]].prize[2];
+        RefreshRes();
+        Order.value = "";
+    }
+
 
 }
 
@@ -245,7 +318,7 @@ function drawPlanete(planete) {
 }
 
 function findKeyPlanete(positionX, positionY) {
-    for (key in Game.galaxy) {
+    for (let key in Game.galaxy) {
         if (positionX == Game.galaxy[key].position[0] && positionY == Game.galaxy[key].position[1]) {
             return key;
         }
@@ -253,7 +326,7 @@ function findKeyPlanete(positionX, positionY) {
 }
 
 function addBatiment(planete) {
-    for (key in planete.construct) {
+    for (let key in planete.construct) {
         if (planete.construct[key].player !== null) {
             const img = new Image();
             switch (planete.construct[key].type) {
@@ -386,11 +459,9 @@ function getBatiment(type, planete) {
     position = planete.split(',')
     const listInput = listOrder;
     let verifOrder = false;
-    for (key in listOrder) {
+    for (let key in listOrder) {
         if (listOrder[key].tagName === 'INPUT') {
             if (listInput[key].value === '' && verifOrder === false) {
-
-
                 let verifRes = RefreshRes(type);
                 if (verifRes == true) {
                     listOrder[key].value = type + " - " + planete
@@ -404,12 +475,10 @@ function getBatiment(type, planete) {
     }
 
     if (verifOrder === true) {
-        for (key in Game.galaxy) {
+        for (let key in Game.galaxy) {
             if (Game.galaxy[key].position[0] == position[0] && Game.galaxy[key].position[1] == position[1]) {
                 Game.galaxy[key].construct[type].player = me.key;
                 planetInfo.style.display = "none";
-
-
                 drawPlanete(Game.galaxy[key]);
             }
         }
@@ -435,22 +504,20 @@ function RefreshRes(type = null) {
 }
 
 function writeMessage(canvas, message) {
-    var contextMap = canvas.getContext('2d');
-    contextMap.clearRect(0, 0, 600, 30);
-    contextMap.font = '18pt Calibri';
-    contextMap.fillStyle = 'white';
-    contextMap.fillText(message, 10, 25);
+    /*     var contextMap = canvas.getContext('2d');
+        contextMap.clearRect(0, 0, 600, 30);
+        contextMap.font = '18pt Calibri';
+        contextMap.fillStyle = 'white';
+        contextMap.fillText(message, 10, 25); */
 }
 
 function checkMouse(positionX, positionY) {
     let result = false;
-    for (idPlanete in Game.galaxy) {
-        if (positionX >= Game.galaxy[idPlanete].position[0] - 10 && positionX <= Game.galaxy[idPlanete].position[
-                0] +
-            10) {
-            if (positionY >= Game.galaxy[idPlanete].position[1] - 10 && positionY <= Game.galaxy[idPlanete]
-                .position[
-                    1] + 10) {
+    for (let idPlanete in Game.galaxy) {
+        if (positionX >= Game.galaxy[idPlanete].position[0] - 20 &&
+            positionX <= Game.galaxy[idPlanete].position[0] + 20) {
+            if (positionY >= Game.galaxy[idPlanete].position[1] - 20 &&
+                positionY <= Game.galaxy[idPlanete].position[1] + 20) {
                 result = Game.galaxy[idPlanete];
             }
         }
@@ -462,16 +529,33 @@ function checkMouse(positionX, positionY) {
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
+        x: (evt.clientX - rect.left) / zoom,
+        y: (evt.clientY - rect.top) / zoom
     };
 }
 
-canvasMap.addEventListener('mousemove', function (evt) {
+/* canvasMap.addEventListener('mousewheel', function (evt) {
+    console.log(evt.deltaY);
+    console.log(zoom);
+
+    if (evt.deltaY > 0) {
+        console.log("ZOOM OUT");
+        zoom -= 0.05;
+    } else {
+        console.log('ZOOM IN');
+        zoom += 0.05;
+    }
+    console.log(zoom);
+    contextMap.scale(zoom, zoom);
+    drawGame(Game);
+
+}); */
+
+canvasMap.addEventListener('click', function (evt) {
     var mousePos = getMousePos(canvasMap, evt);
     var message = 'Mouse position: ' + Math.floor(mousePos.x) + ',' + Math.floor(mousePos.y);
 
-    const planete = checkMouse(mousePos.x, mousePos.y)
+    const planete = checkMouse(mousePos.x, mousePos.y);
 
     if (planete !== false) {
         if (planete.connect === true) {
@@ -501,10 +585,10 @@ canvasMap.addEventListener('mousemove', function (evt) {
 
 
 
-            listConstruct.innerHTML = `<div class="col-xs-11"><h3>Construction</h3></div>`;
+            listConstruct.innerHTML = `<div class="col-xs-11"><h3>Batiments</h3></div>`;
             const megapole = planete.construct[3];
             delete planete.construct[3];
-            for (key in planete.construct) {
+            for (let key in planete.construct) {
                 if (planete.construct[key].player === null) {
                     listConstruct.innerHTML +=
                         `<div class="col-xs-2 batiment" onclick="getBatiment('${key}','${planete.position}' )">
@@ -519,11 +603,13 @@ canvasMap.addEventListener('mousemove', function (evt) {
             }
 
             if (megapole.player !== null) {
-                listConstruct.innerHTML +=
-                    `<div class="col-xs-11"><h3>Pallier Sup</h3></div>
-                        <div class="col-xs-2 batiment player${planete.construct[key].player}">
-                                <div class="${megapole.type}" onmouseover="viewTooltip('3','${planete.position}', 'player${planete.construct[key].player}')"></div>
+                listConstruct.innerHTML =
+                    `<div class="col-xs-11"><h3>Batiments</h3></div>
+                        <div class="col-xs-2 batiment player${megapole.player}">
+                                <div class="${megapole.type}" onmouseover="viewTooltip('3','${planete.position}', 'player${megapole.player}')"></div>
                                 </div>`;
+            } else if (megapole.player == me.key) {
+                console.log("LA");
             } else {
 
                 if (planete.construct[0].player == me.key && planete.construct[1].player == me.key &&
@@ -557,7 +643,15 @@ function viewTooltip(key, position, nameClass) {
     Tooltips.reset();
     Tooltips.main.classList.value = nameClass;
     if (nameClass != "neutre") {
-        Tooltips.prize.main.classList.value = "hidden"
+        Tooltips.prize.main.classList.value = "hidden";
+
+        if ("player" + me.key != nameClass) {
+            console.log("ATTACK");
+            actionAttack.style.display = "block";
+            /* console.log(nameClass);
+            console.log(key);
+            console.log(position); */
+        }
     }
 
     Tooltips.icon.classList.value = defBatiment[key].type;

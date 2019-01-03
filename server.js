@@ -69,18 +69,18 @@ function random_rgba() {
 
 }
 
-function getGalaxy() {
+function getGalaxy(size = 2) {
   let Planetes = [];
   let y = 1;
   let moyenIron = 0;
   let moyenElec = 0;
   let moyenMoney = 0;
-  for (let i = 50; i < 1200; i += 100) {
+  for (let i = 50; i < ((700 * size) - 50); i += 100) {
     let u = 100
     if (y % 2) {
       u = 50;
     }
-    for (u; u < 700; u += 100) {
+    for (u; u < (350 * size); u += 100) {
       const randomValue = random_rgba();
       let construct = [{
           "type": "atack",
@@ -146,9 +146,9 @@ io.on('connection', (socket) => {
     md5: md5(userId),
     color: getRandomColor(),
     Res: {
-      "Iron": 255,
-      "Elec": 255,
-      "Money": 255
+      "Iron": 0,
+      "Elec": 0,
+      "Money": 0
     },
     base: {}
   };
@@ -220,7 +220,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('createGalaxy', (Game) => {
-    Game.galaxy = getGalaxy();
+    Game.galaxy = getGalaxy(Game.size);
 
     // POSITION DE DEPART
     for (key in Game.playerIn) {
@@ -253,8 +253,8 @@ io.on('connection', (socket) => {
           ];
           break;
         case '1':
-          Game.playerIn[key].base = [850, 350];
-          keyBase = findKeyPlanete(850, 350, Game.galaxy);
+          Game.playerIn[key].base = [1050, 350];
+          keyBase = findKeyPlanete(1050, 350, Game.galaxy);
           Game.galaxy[keyBase].size = 22;
           Game.galaxy[keyBase].color = "blue";
           Game.galaxy[keyBase].value.fer = 250;
@@ -283,11 +283,25 @@ io.on('connection', (socket) => {
 
     Game.date.start = Date.now();
 
+
+
+
+
     fs.appendFile("Games/" + Game.id + ".json", JSON.stringify(Game), function (err) {
       if (err) {
         return console.log(err);
       }
       console.log("Galaxy create !!!");
+
+      getRes(Game.id).forEach((playerRes, key) => {
+        Game.playerIn[key].Res.Iron += playerRes.fer;
+        Game.playerIn[key].Res.Elec += playerRes.elec;
+        Game.playerIn[key].Res.Money += playerRes.money;
+        Game.playerIn[key].Res.PV = playerRes.pv;
+        Game.playerIn[key].Res.magic = playerRes.magic;
+        Game.playerIn[key].stat = playerRes.stat;
+      });
+      SaveGame(Game.id, Game);
     });
   });
 
@@ -337,15 +351,19 @@ io.on('connection', (socket) => {
         });
 
       });
+      console.table(getRes(idGame));
       getRes(idGame).forEach((playerRes, key) => {
-        Game.playerIn[key].Res.Iron = playerRes.fer;
-        Game.playerIn[key].Res.Elec = playerRes.elec;
-        Game.playerIn[key].Res.Money = playerRes.money;
+        Game.playerIn[key].Res.Iron += playerRes.fer;
+        Game.playerIn[key].Res.Elec += playerRes.elec;
+        Game.playerIn[key].Res.Money += playerRes.money;
+        Game.playerIn[key].Res.PV = playerRes.pv;
+        Game.playerIn[key].Res.magic = playerRes.magic;
+        Game.playerIn[key].stat = playerRes.stat;
       })
       io.emit('stopTurn', Game);
     }
     SaveGame(idGame, Game);
-  })
+  });
 
   function getRes(idGame) {
     var Game = JSON.parse(fs.readFileSync('Games/' + idGame + '.json', 'utf8'));
@@ -359,22 +377,43 @@ io.on('connection', (socket) => {
               fer: 0,
               elec: 0,
               money: 0,
+              pv: 0,
+              magic: {
+                deathRay: 0,
+              },
+              stat: {
+                batiment: {
+                  attack: 0,
+                  explo: 0,
+                  commerce: 0,
+                  megapole:0,
+                }
+              },
             };
           }
           switch (batiment.type) {
             case "atack":
               results[batiment.player].fer += planet.value.fer;
+              results[batiment.player].pv += 1;
+              results[batiment.player].stat.batiment.attack += 1;
               break;
             case "explo":
               results[batiment.player].elec += planet.value.elec;
+              results[batiment.player].pv += 1;
+              results[batiment.player].stat.batiment.explo += 1;
               break;
             case "commerce":
               results[batiment.player].money += planet.value.money;
+              results[batiment.player].pv += 1;
+              results[batiment.player].stat.batiment.commerce += 1;
               break;
             case "megapole":
               results[batiment.player].fer += planet.value.fer;
               results[batiment.player].elec += planet.value.elec;
               results[batiment.player].money += planet.value.money;
+              results[batiment.player].pv += 10;
+              results[batiment.player].magic.deathRay += 1;
+              results[batiment.player].stat.batiment.megapole += 1;
               break;
 
           }
