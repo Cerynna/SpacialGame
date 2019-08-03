@@ -25,16 +25,21 @@ module.exports = function (app, games) {
 
   });
 
-  app.get('/test-*', (req, res) => {
-    res.set('Content-Type', 'image/jpeg');
+  // app.get('/test-*', (req, res) => {
+  //   res.set('Content-Type', 'image/jpeg');
 
-    var img = fs.readFileSync('public/img/attack.png');
-    res.writeHead(200, {
-      'Content-Type': 'image/png'
-    });
-    res.end(img, 'binary');
+  //   var img = fs.readFileSync('public/img/attack.png');
+  //   res.writeHead(200, {
+  //     'Content-Type': 'image/png'
+  //   });
+  //   res.end(img, 'binary');
 
 
-  });
+  // });
+
+
+  app.get('/test', (req, res)=>{
+    res.render('test');
+  })
 
 };
