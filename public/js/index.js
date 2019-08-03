@@ -1,6 +1,6 @@
 let me = false;
 let Games = false;
-const socket = io.connect('http://localhost:1337');
+const socket = io.connect('http://localhost:3000');
 const divMain = document.getElementById('main');
 const inputPseudo = document.getElementById('inputPseudo');
 const inputMessage = document.getElementById('inputMessage');

@@ -13,7 +13,7 @@ document.addEventListener('keydown', (e) => {
 let zoom = 1;
 
 
-const socket = io.connect('http://localhost:1337');
+const socket = io.connect('http://localhost:3000');
 const idGame = window.location.pathname.split("-")[1];
 const idPlayer = window.location.pathname.split("-")[2];
 const planetInfo = document.getElementById("planetInfo");
