@@ -441,7 +441,7 @@ io.on('connection', (socket) => {
 
 
 
-http.listen(1337, function () {
-  console.log('listening on *:1337');
+http.listen(3000, function () {
+  console.log('listening on *:3000');
 
 });
