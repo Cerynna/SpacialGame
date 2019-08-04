@@ -222,7 +222,7 @@
           const randTexture = Math.floor(Math.random() * 14);
 
           console.log(data.hidden);
-          if (data.hidden >= 0) {
+          if (data.hidden >= 1) {
             loader.load(`img/textures/planets/${data.texture}.jpg`, function(
               texture
             ) {
