@@ -161,18 +161,15 @@ io.on("connection", socket => {
     base: {}
   };
   socket.on("join", pseudo => {
-    
-
     let verifUser = users.filter(userIn => {
       // console.log("userIn", userIn.pseudo, pseudo);
       return userIn.pseudo === pseudo;
     });
     // console.log(verifUser.length);
     if (verifUser.length === 0) {
-
       CurrentUser.pseudo = pseudo;
       console.log("join", CurrentUser);
-      
+
       users.push(CurrentUser);
       io.emit("playerNew", users, CurrentUser);
       io.emit(
@@ -181,11 +178,38 @@ io.on("connection", socket => {
         server,
         Tools.makeID(10)
       );
+      io.emit("refreshUnivers", games);
     } else {
     }
 
     // console.log(users);
   });
+
+  socket.on("createNewGame", (whoCreate, game) => {
+    console.log("createNewGame", whoCreate, game);
+    // let whoCanCreate = true;
+    // for (let idGame in games) {
+    //   if (games[idGame].whoCreate.id === whoCreate.id) {
+    //     whoCanCreate = false;
+    //   }
+    // }
+    //     if (whoCanCreate === true) {
+    //       game.id = makeid(14);
+    //       game.whoCreate = whoCreate;
+    //       game.date = {
+    //         create: Date.now(),
+    //       }
+    //       game.playerIn = {
+    //         0: whoCreate,
+    //       };
+    //       games[game.id] = game;
+    //       io.emit('refreshUnivers', games);
+    //       io.emit('newMessage', "** " + whoCreate.pseudo + " viens de crée un nouvelle Univers  !!! **", server, makeid(10));
+    //     } else {
+    //       io.emit('error', 'Vous avez déjà un Univers de créer');
+    //     }
+  });
+
   socket.on("disconnect", function() {
     console.log("disconnect");
   });
@@ -244,18 +268,20 @@ io.on("connection", socket => {
 //     io.emit('refreshUnivers', games);
 //   });
 
-//   socket.on('sendMessage', (message, whoSendMessage) => {
-//     let idMessage = makeid(10);
-//     io.emit('newMessage', message, whoSendMessage, idMessage);
-//   });
+// socket.on("sendMessage", (message, whoSendMessage) => {
+//   let idMessage = makeid(10);
+//   io.emit("newMessage", message, whoSendMessage, idMessage);
+// });
 
-//   socket.on('createNewGame', (whoCreate, game) => {
-//     let whoCanCreate = true;
-//     for (let idGame in games) {
-//       if (games[idGame].whoCreate.id === whoCreate.id) {
-//         whoCanCreate = false;
-//       }
-//     }
+// socket.on("createNewGame", (whoCreate, game) => {
+
+// console.log('createNewGame', whoCreate, game)
+// let whoCanCreate = true;
+// for (let idGame in games) {
+//   if (games[idGame].whoCreate.id === whoCreate.id) {
+//     whoCanCreate = false;
+//   }
+// }
 //     if (whoCanCreate === true) {
 //       game.id = makeid(14);
 //       game.whoCreate = whoCreate;
@@ -271,7 +297,7 @@ io.on("connection", socket => {
 //     } else {
 //       io.emit('error', 'Vous avez déjà un Univers de créer');
 //     }
-//   });
+// });
 
 //   socket.on('createGalaxy', (Game) => {
 //     Game.galaxy = getGalaxy(Game.size);

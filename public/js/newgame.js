@@ -269,7 +269,7 @@
 
             data.connect.forEach(idPlanet => {
               let randomConnect = Galaxy[idPlanet];
-              if (randomConnect.hidden >= 9) {
+              if (randomConnect.hidden >= 0) {
                 var material = new THREE.LineBasicMaterial({ color: 0xffffff });
                 var connectLine = new THREE.Geometry();
                 connectLine.vertices.push(
