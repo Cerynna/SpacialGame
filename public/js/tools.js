@@ -1,7 +1,10 @@
+const fs = require("fs");
+
 const Tools = {
   init: () => {
     console.log("INIT TOOLS");
   },
+  fs: require("fs"),
   getRandomArbitrary: (min, max) => {
     return Math.random() * (max - min) + min;
   },
@@ -47,29 +50,42 @@ const Tools = {
       rgb: rgb
     };
   },
-  CreateGame: (
-    sizeGame = 2,
-    Creator = {
-      id: "4ESMfqHwXL",
-      pseudo: "RSLEQID",
-      md5: "6362a9d480ce9ec03af5916f0b07fb01",
-      color: "#473D48",
-      Res: { Iron: 0, Elec: 0, Money: 0 },
-      base: {}
-    }
-  ) => {
+  SaveGame: Game => {
+    console.log(Game)
+    Tools.fs.writeFile("Games/" + Game.id + ".json", JSON.stringify(Game), (err) => {
+      if (err) throw err;
+      console.log('The file has been saved!');
+    });
+  },
+  RecupGame:(idGme)=>{
+   const Game =  JSON.parse(Tools.fs.readFileSync("Games/" + idGme + ".json"));
+
+  //  console.log(Game)
+   return Game
+
+  },
+  CreateGame: (data, Creator) => {
+    // = {
+    //   id: "4ESMfqHwXL",
+    //   pseudo: "RSLEQID",
+    //   md5: "6362a9d480ce9ec03af5916f0b07fb01",
+    //   color: "#473D48",
+    //   Res: { Iron: 0, Elec: 0, Money: 0 },
+    //   base: {}
+    // }
     let Planetes = [];
 
     const originPlanets = [];
 
-    let nbPlanetes = sizeGame * 20;
+    let nbPlanetes = data.size * 20;
     let moyenIron = 0;
     let moyenElec = 0;
     let moyenMoney = 0;
+    // let hiddenBase = [];
 
-    for (let index = 0; index < sizeGame; index++) {
+    for (let index = 0; index < data.size; index++) {
       let indexPlanet = Tools.getRandomInt(0, nbPlanetes);
-
+      // hiddenBase.push(0);
       if (originPlanets.indexOf(indexPlanet) > 0) {
         indexPlanet = Tools.getRandomInt(0, nbPlanetes - 1);
       }
@@ -78,6 +94,11 @@ const Tools = {
 
     for (let index = 0; index < nbPlanetes; index++) {
       const randomValue = Tools.randomRGB();
+      let hiddenBase = [];
+
+      for (let index = 0; index < data.size; index++) {
+        hiddenBase.push(0);
+      }
 
       // console.log('ORIGIN',originPlanets, originPlanets.indexOf(index));
       let construct = [
@@ -102,7 +123,7 @@ const Tools = {
       //   console.log("construct", construct);
       const sizePlanet = Math.floor((Math.random() + 1) * 10) * 1.8;
 
-      const position = Tools.generateCoord(sizeGame);
+      const position = Tools.generateCoord(data.size);
       // console.log(Math.floor(position.x + position.y + position.z));
       const Planete = {
         name: Tools.nameGenerator(1),
@@ -110,8 +131,9 @@ const Tools = {
         position: position,
         color: randomValue.rgb,
         construct: construct,
+        index:index,
         texture: Tools.getRandomInt(0, 29),
-        hidden: 0,
+        hidden: hiddenBase,
         connect: [
           Tools.getRandomInt(0, nbPlanetes - 1),
           Tools.getRandomInt(0, nbPlanetes - 1)
@@ -125,28 +147,29 @@ const Tools = {
       moyenIron += Math.floor((randomValue.red * sizePlanet) / 8);
       moyenElec += Math.floor((randomValue.blue * sizePlanet) / 8);
       moyenMoney += Math.floor((randomValue.green * sizePlanet) / 20);
-
+      // console.log(originPlanets.indexOf(index));
       if (originPlanets.indexOf(index) >= 0) {
         // console.log("ORIGIN", originPlanets, originPlanets.indexOf(index));
+        const playerId = originPlanets.indexOf(index);
         Planete.construct = [
           {
             type: "atack",
-            player: originPlanets.indexOf(index)
+            player: playerId
           },
           {
             type: "explo",
-            player: originPlanets.indexOf(index)
+            player: playerId
           },
           {
             type: "commerce",
-            player: originPlanets.indexOf(index)
+            player: playerId
           },
           {
             type: "megapole",
             player: null
           }
         ];
-        Planete.hidden = 1;
+        Planete.hidden[playerId] = 9;
       }
 
       Planetes.push(Planete);
@@ -154,13 +177,18 @@ const Tools = {
 
     // console.log(Planetes.length);
     // Planetes = NewGame(Planetes, size);
-    return {
+    const Game = {
       galaxy: Planetes,
       id: Tools.makeID(12),
-      name: `Univers de ${Creator.pseudo}`,
+      name: data.name,
       whoCreate: Creator,
-      date: { create: Date.now(), update: 0, end: 0, start: 0 }
+      date: { create: Date.now(), update: 0, end: 0, start: 0 },
+      moyen: { fer: moyenIron, elec: moyenElec, money: moyenMoney },
+      originPlanets: originPlanets,
+      playerIn: [Creator]
     };
+    Tools.SaveGame(Game);
+    return Game;
   },
   nameGenerator: count => {
     let vowels = {

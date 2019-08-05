@@ -11,9 +11,9 @@ module.exports = function (app, games) {
     });
 
   });
-  app.get('/game-*', (req, res) => {
+  app.get('/game', (req, res) => {
 
-    res.render('game');
+    res.render('newGame');
 
   });
 

@@ -52,6 +52,16 @@ document.getElementById("validGame").addEventListener("click", event => {
   divNewGame.style.display = "none";
   divModal.style.display = "none";
 });
+
+let usertest = {
+  id: "4ESMfqHwXL",
+  pseudo: "RSLEQID",
+  md5: "6362a9d480ce9ec03af5916f0b07fb01",
+  color: "#473D48",
+  Res: { Iron: 0, Elec: 0, Money: 0 },
+  base: {}
+};
+socket.emit("createNewGame", usertest, {size:2, name: 'TEST GENERATE'});
 document.getElementById("closeCreateGame").addEventListener("click", event => {
   divNewGame.style.display = "none";
   divModal.style.display = "none";
