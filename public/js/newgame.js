@@ -21,6 +21,8 @@
   let objectsClouds = [];
   let onRenderFcts = [];
 
+  const divOverlay = document.querySelector("#overlay");
+
   function init(game) {
     Game = game;
     Galaxy = game.galaxy;
@@ -48,6 +50,7 @@
 
     controls = new THREE.OrbitControls(camera);
     controls.minDistance = 60;
+    controls.maxDistance = (Galaxy.length / 20) * 500;
 
     loader = new THREE.TextureLoader();
 
@@ -129,7 +132,7 @@
         loader.load(`img/textures/planets/${data.texture}.jpg`, function(
           texture
         ) {
-          var geometry = new THREE.SphereGeometry(data.size * 0.9, 10, 10);
+          var geometry = new THREE.SphereGeometry(data.size, 10, 10);
           var material = new THREE.MeshBasicMaterial({
             map: texture,
             transparent: true,
@@ -204,7 +207,7 @@
     var lastTimeMsec = null;
     requestAnimationFrame(function animate(nowMsec) {
       objects.forEach(sphere => {
-        rotateSphere(sphere, sphere.data.size / 100000);
+        rotateSphere(sphere, sphere.data.size / 50000);
       });
 
       objectsClouds.forEach(sphere => {
@@ -236,29 +239,43 @@
       if (intersects.length > 0) {
         const indexPlanet = intersects[0].object.data.index;
 
-        console.log(intersects[0].object.material.wireframe);
-        console.log(Galaxy[indexPlanet]);
+        console.log();
+        console.log(Galaxy[indexPlanet].connect);
+        divOverlay.innerHTML = `
+        <div>Name : ${Galaxy[indexPlanet].name}</div>
+        <div>Index : ${Galaxy[indexPlanet].index}</div>
+        <div>X : ${Math.floor(Galaxy[indexPlanet].position.x)}</div>
+        <div>Y : ${Math.floor(Galaxy[indexPlanet].position.y)}</div>
+        <div>Z : ${Math.floor(Galaxy[indexPlanet].position.z)}</div>
 
-        
-
-        
+        `;
+        Galaxy[indexPlanet].construct.forEach(bat => {
+          divOverlay.innerHTML += `<div>${bat.type} : ${bat.player}</div>`;
+        });
 
         if (
           controls.center.x !== intersects[0].object.position.x ||
           controls.center.y !== intersects[0].object.position.y ||
           controls.center.z !== intersects[0].object.position.z
         ) {
-          camera.position.set(0, 0, 0);
-          controls.maxDistance = 60;
-          setTimeout(() => {
-            controls.maxDistance = 3000;
-          }, 500);
-        }else{
-          console.log()
-          if (
-            // intersects[0].object.material.wireframe === true &&
-            Galaxy[indexPlanet].hidden[userID] === 0
-          ) {
+          // camera.position.set(0, 0, 0);
+          // controls.maxDistance = 60;
+          const Interval = setInterval(() => {
+            console.log(controls.maxDistance)
+            if (controls.maxDistance >= 60) {
+              controls.maxDistance -= 20;
+              controls.update();
+            }else{
+              clearInterval(Interval);
+              controls.maxDistance = (Galaxy.length / 20) * 500;
+            }
+          }, 10);
+
+          // setTimeout(() => {
+          //   controls.maxDistance = 3000;
+          // }, 500);
+        } else {
+          if (Galaxy[indexPlanet].hidden[userID] === 0) {
             scene.remove(intersects[0].object);
             DrawPlanet(Galaxy[indexPlanet], true);
             Galaxy[indexPlanet].hidden[userID] = 9;
@@ -276,17 +293,27 @@
       }
     });
   }
+
   // class Game {
   //   constructor(game) {
   //     this.game = game;
   //   }
   // }
-function ResetCam() {
-  controls.center.set(0, 0, 0);
-  controls.minDistance = 60;
-  controls.maxDistance = Infinity;
-  controls.update();
-}
+  function ResetCam() {
+    controls.center.set(0, 0, 0);
+    controls.minDistance = 60;
+    controls.maxDistance = (Galaxy.length / 20) * 500;
+    controls.update();
+  }
+
+  document.addEventListener("dblclick", (event)=>{
+    console.log(event.ctrlKey)
+    if(event.ctrlKey){
+      divOverlay.innerHTML = 'Clique sur un planete'
+      ResetCam()
+    }
+  }, false);
+
   exports.init = init;
   exports.ResetCam = ResetCam;
   // exports.Polygon = Polygon;
@@ -546,4 +573,4 @@ function getRandomInt(min, max) {
 //   controls.update();
 // }
 
-// // document.addEventListener("mousemove", onDocumentMouseDown, false);
+

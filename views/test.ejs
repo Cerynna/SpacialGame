@@ -10,27 +10,51 @@
         background: url("img/textures/espace.jpg") no-repeat;
         background-size: cover;
       }
+      #overlay {
+        position: fixed;
+        z-index: 1000;
+        width: 200px;
+        height: 200px;
+        background: black;
+        color: white;
+      }
+      #command {
+        position: fixed;
+        z-index: 1000;
+        width: 200px;
+        /* height: 200px; */
+        bottom: 0;
+        right: 0;
+        background: black;
+        color: white;
+        padding: 5px 10px;
+      }
     </style>
   </head>
 
   <body style="margin: 0px; overflow: hidden; text-align:center;">
-    test Galaxy
-    <button onclick="GAME.ResetCam()">RESET</button>
+    <div id="overlay">
+      Clique sur un planete
+    </div>
+    <div id="command">
+      CTRL + DBLCLICK => Reset la vue au centre de la galaxy
+    </div>
+    <!-- test Galaxy
+    <button onclick="GAME.ResetCam()">RESET</button> -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/three.min.js"></script>
     <script src="js/controls.js"></script>
     <script src="js/newgame.js"></script>
     <script>
-  const socket = io.connect("http://localhost:3000");
+      const socket = io.connect("http://localhost:3000");
 
-socket.on('devGalaxy', (game)=>{
-// console.log(game)
-GAME.init(game);
-})
+      socket.on("devGalaxy", game => {
+        // console.log(game)
+        GAME.init(game);
+      });
 
-// var poly1 = new GAME.init();
-
+      // var poly1 = new GAME.init();
     </script>
   </body>
 </html>
