@@ -187,7 +187,7 @@ const Tools = {
       originPlanets: originPlanets,
       playerIn: [Creator]
     };
-    Tools.SaveGame(Game);
+    // Tools.SaveGame(Game);
     return Game;
   },
   nameGenerator: count => {

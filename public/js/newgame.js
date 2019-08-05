@@ -50,7 +50,7 @@
 
     controls = new THREE.OrbitControls(camera);
     controls.minDistance = 60;
-    controls.maxDistance = (Galaxy.length / 20) * 500;
+    controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
 
     loader = new THREE.TextureLoader();
 
@@ -239,8 +239,8 @@
       if (intersects.length > 0) {
         const indexPlanet = intersects[0].object.data.index;
 
-        console.log();
-        console.log(Galaxy[indexPlanet].connect);
+        // console.log();
+        // console.log(Galaxy[indexPlanet].connect);
         divOverlay.innerHTML = `
         <div>Name : ${Galaxy[indexPlanet].name}</div>
         <div>Index : ${Galaxy[indexPlanet].index}</div>
@@ -252,6 +252,22 @@
         Galaxy[indexPlanet].construct.forEach(bat => {
           divOverlay.innerHTML += `<div>${bat.type} : ${bat.player}</div>`;
         });
+        Galaxy[indexPlanet].connect.forEach(idConnect => {
+          console.log(Galaxy[idConnect]);
+          CalculDistance(
+            Galaxy[indexPlanet].position,
+            Galaxy[idConnect].position
+          );
+          divOverlay.innerHTML += `<div>${
+            Galaxy[idConnect].name
+          } : ${CalculDistance(
+            Galaxy[indexPlanet].position,
+            Galaxy[idConnect].position
+          )}</div>`;
+        });
+          divOverlay.innerHTML += `<div>Iron : ${Galaxy[indexPlanet].value.fer}</div>`;
+          divOverlay.innerHTML += `<div>Elec : ${Galaxy[indexPlanet].value.elec}</div>`;
+          divOverlay.innerHTML += `<div>Money : ${Galaxy[indexPlanet].value.money}</div>`;
 
         if (
           controls.center.x !== intersects[0].object.position.x ||
@@ -261,13 +277,13 @@
           // camera.position.set(0, 0, 0);
           // controls.maxDistance = 60;
           const Interval = setInterval(() => {
-            console.log(controls.maxDistance)
+            // console.log(controls.maxDistance)
             if (controls.maxDistance >= 60) {
               controls.maxDistance -= 20;
               controls.update();
-            }else{
+            } else {
               clearInterval(Interval);
-              controls.maxDistance = (Galaxy.length / 20) * 500;
+              controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
             }
           }, 10);
 
@@ -299,20 +315,34 @@
   //     this.game = game;
   //   }
   // }
+
+  function CalculDistance(planetA, planetB) {
+    // console.log(planetA, planetB);
+    let calX = Math.pow(planetB.x - planetA.x, 2);
+    let calY = Math.pow(planetB.y - planetA.y, 2);
+    let calZ = Math.pow(planetB.z - planetA.z, 2);
+    let distance = Math.sqrt(calX + calY + calZ);
+    console.log(distance);
+    return Math.floor(distance);
+  }
   function ResetCam() {
     controls.center.set(0, 0, 0);
     controls.minDistance = 60;
-    controls.maxDistance = (Galaxy.length / 20) * 500;
+    controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
     controls.update();
   }
 
-  document.addEventListener("dblclick", (event)=>{
-    console.log(event.ctrlKey)
-    if(event.ctrlKey){
-      divOverlay.innerHTML = 'Clique sur un planete'
-      ResetCam()
-    }
-  }, false);
+  document.addEventListener(
+    "dblclick",
+    event => {
+      // console.log(event.ctrlKey)
+      if (event.ctrlKey) {
+        divOverlay.innerHTML = "Clique sur un planete";
+        ResetCam();
+      }
+    },
+    false
+  );
 
   exports.init = init;
   exports.ResetCam = ResetCam;
@@ -572,5 +602,3 @@ function getRandomInt(min, max) {
 //   controls.maxDistance = Infinity;
 //   controls.update();
 // }
-
-

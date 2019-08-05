@@ -160,21 +160,21 @@ io.on("connection", socket => {
     },
     base: {}
   };
-  socket.emit("devGalaxy", Tools.RecupGame("5BjJYoc36wN5"));
-  // socket.emit(
-  //   "devGalaxy",
-  //   Tools.CreateGame(
-  //     { size: 2, name: "TEST GALAXY" },
-  //     {
-  //       id: "4ESMfqHwXL",
-  //       pseudo: "Hystérias",
-  //       md5: "6362a9d480ce9ec03af5916f0b07fb01",
-  //       color: "#473D48",
-  //       Res: { Iron: 0, Elec: 0, Money: 0 },
-  //       base: {}
-  //     }
-  //   )
-  // );
+  // socket.emit("devGalaxy", Tools.RecupGame("5BjJYoc36wN5"));
+  socket.emit(
+    "devGalaxy",
+    Tools.CreateGame(
+      { size: 2, name: "TEST GALAXY" },
+      {
+        id: "4ESMfqHwXL",
+        pseudo: "Hystérias",
+        md5: "6362a9d480ce9ec03af5916f0b07fb01",
+        color: "#473D48",
+        Res: { Iron: 0, Elec: 0, Money: 0 },
+        base: {}
+      }
+    )
+  );
 
   socket.on("join", pseudo => {
     let verifUser = users.filter(userIn => {
