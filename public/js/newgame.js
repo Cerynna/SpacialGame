@@ -16,17 +16,99 @@
     mouse,
     loader,
     Game,
-    Galaxy;
-  let objects = [];
-  let objectsClouds = [];
-  let onRenderFcts = [];
+    Galaxy,
+    Lines = [],
+    userID,
+    objects = [],
+    showLine = true,
+    objectsClouds = [],
+    onRenderFcts = [];
 
   const divOverlay = document.querySelector("#overlay");
+  const divListPlanetes = document.querySelector("#listPlanetes");
+  const buttonToogleLine = document.querySelector("#buttonToogleLine");
 
-  function init(game) {
+  function init(game, userID = 0) {
     Game = game;
     Galaxy = game.galaxy;
-    DrawGame(Galaxy, 0);
+    userID = userID;
+    DrawGame(Galaxy, userID);
+    DrawListPlanete(userID);
+  }
+  buttonToogleLine.addEventListener("click", () => {
+    ToogleLine();
+  });
+  function ToogleLine() {
+    Lines.forEach(line => {
+        scene.remove(line);
+        line.visible = !showLine;
+        scene.add(line)
+    });
+    showLine = !showLine
+  }
+
+  function DrawListPlanete(userID) {
+    divListPlanetes.innerHTML = "";
+    let ShowPlanetes = [];
+
+    Galaxy.forEach(planete => {
+      if (planete.hidden[userID] > 0) {
+        console.log(planete, planete.connect);
+        ShowPlanetes.push(planete.index);
+        planete.connect.forEach(idPlanetConnect => {
+          ShowPlanetes.push(idPlanetConnect);
+        });
+      }
+    });
+
+    ShowPlanetes.reduce((x, y) => (x.includes(y) ? x : [...x, y]), []).forEach(
+      (idPlanet, key) => {
+        const planete = Galaxy[idPlanet];
+
+        let divPlanete = document.createElement("div");
+        divPlanete.innerHTML = `${key} - ${planete.name}`;
+        if (planete.hidden[userID] > 0) {
+          divPlanete.className = "valid";
+        }
+        divPlanete.addEventListener("click", () => {
+          ZoomCam(planete.position);
+          DrawInfoPlanete(planete);
+        });
+        divListPlanetes.appendChild(divPlanete);
+
+        // divListPlanetes.innerHTML += `<div class="${className}">${planete.name} ${
+        //   planete.hidden[userID]
+        // }</div>`;
+        // ZoomCam(position)
+      }
+    );
+  }
+
+  function DrawInfoPlanete(planete) {
+    divOverlay.innerHTML = `
+    <div>Name : ${planete.name}</div>
+    <div>Index : ${planete.index}</div>
+    <div>X : ${Math.floor(planete.position.x)}</div>
+    <div>Y : ${Math.floor(planete.position.y)}</div>
+    <div>Z : ${Math.floor(planete.position.z)}</div>
+
+    `;
+    planete.construct.forEach(bat => {
+      divOverlay.innerHTML += `<div>${bat.type} : ${bat.player}</div>`;
+    });
+    planete.connect.forEach(idConnect => {
+      console.log(Galaxy[idConnect]);
+      CalculDistance(planete.position, Galaxy[idConnect].position);
+      divOverlay.innerHTML += `<div>${
+        Galaxy[idConnect].name
+      } : ${CalculDistance(
+        planete.position,
+        Galaxy[idConnect].position
+      )}</div>`;
+    });
+    divOverlay.innerHTML += `<div>Iron : ${planete.value.fer}</div>`;
+    divOverlay.innerHTML += `<div>Elec : ${planete.value.elec}</div>`;
+    divOverlay.innerHTML += `<div>Money : ${planete.value.money}</div>`;
   }
 
   function DrawGame(Galaxy, userID) {
@@ -50,143 +132,36 @@
 
     controls = new THREE.OrbitControls(camera);
     controls.minDistance = 60;
-    controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
+    controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
 
     loader = new THREE.TextureLoader();
 
-    console.log(Galaxy[Game.originPlanets[userID]], Galaxy);
-    function DrawConnect(data) {
-      console.log("DrawConnect", data.connect);
-      data.connect.map(idPlanet => {
-        let randomConnect = Galaxy[idPlanet];
-        var material = new THREE.LineBasicMaterial({ color: 0xffffff });
-        var connectLine = new THREE.Geometry();
-        console.log(idPlanet, randomConnect.hidden[userID]);
-        if (randomConnect.hidden[userID] == 0) {
-          DrawPlanet(randomConnect, false);
-        }
+    var light = new THREE.PointLight(0xff0000, 1, 100);
+    light.position.set(50, 50, 50);
+    scene.add(light);
 
-        connectLine.vertices.push(
-          new THREE.Vector3(
-            randomConnect.position.x,
-            randomConnect.position.y,
-            randomConnect.position.z
-          )
-        );
-        connectLine.vertices.push(
-          new THREE.Vector3(data.position.x, data.position.y, data.position.z)
-        );
-        var line = new THREE.Line(connectLine, material);
-        scene.add(line);
+    // console.log(Galaxy[Game.originPlanets[userID]], Galaxy);
+
+
+    loader.load(`img/textures/espace.jpg`, function(
+      texture
+    ) {
+      var geometry = new THREE.SphereGeometry(((Galaxy.length / 20) * 500 * 2)+1000, 30, 30);
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        wireframe: false,
+        side: THREE.DoubleSide,
       });
-    }
-    function DrawPlanet(data, fog = false) {
-      console.log("DRAWPLANET", data.index);
-      if (fog === true) {
-        loader.load(`img/textures/planets/${data.texture}.jpg`, function(
-          texture
-        ) {
-          var geometry = new THREE.SphereGeometry(data.size, 30, 30);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            wireframe: false
-          });
-          var sphere = new THREE.Mesh(geometry, material);
-          sphere.position.x = data.position.x;
-          sphere.position.y = data.position.y;
-          sphere.position.z = data.position.z;
-          sphere.cursor = "pointer";
-          sphere.data = data;
-          scene.add(sphere);
-          objects.push(sphere);
-        });
+      var sphere = new THREE.Mesh(geometry, material);
+      sphere.position.x = 0;
+      sphere.position.y = 0;
+      sphere.position.z = 0;
+      scene.add(sphere);
+    });
 
-        loader.load(`img/textures/clouds/${getRandomInt(0, 3)}.png`, function(
-          texture
-        ) {
-          var geometry = new THREE.SphereGeometry(
-            data.size + getRandomInt(50, 100) / 100,
-            30,
-            30
-          );
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            color: data.color,
-            transparent: true,
-            opacity: 0.9,
-            wireframe: false
-          });
-          var sphere = new THREE.Mesh(geometry, material);
-          sphere.position.x = data.position.x;
-          sphere.position.y = data.position.y;
-          sphere.position.z = data.position.z;
-          sphere.cursor = "pointer";
-          sphere.data = data;
-          scene.add(sphere);
-          objectsClouds.push(sphere);
-        });
-        DrawConnect(data);
-      } else {
-        console.log("FOG");
 
-        loader.load(`img/textures/planets/${data.texture}.jpg`, function(
-          texture
-        ) {
-          var geometry = new THREE.SphereGeometry(data.size, 10, 10);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            transparent: true,
-            opacity: 0.5,
-            wireframe: true
-          });
-          var sphere = new THREE.Mesh(geometry, material);
-          sphere.position.x = data.position.x;
-          sphere.position.y = data.position.y;
-          sphere.position.z = data.position.z;
-          sphere.cursor = "pointer";
-          sphere.data = data;
-          scene.add(sphere);
-          objects.push(sphere);
-        });
-      }
-    }
 
-    DrawPlanet(Galaxy[Game.originPlanets[userID]], true);
-
-    // Galaxy.forEach((data, key) => {
-    //   const randTexture = Math.floor(Math.random() * 14);
-
-    //   console.log(data.hidden[userID]);
-    //   if (data.hidden[userID] >= 1) {
-    //     DrawPlanet(data, true);
-
-    //     // data.connect.forEach(idPlanet => {
-    //     //   let randomConnect = Galaxy[idPlanet];
-    //     //   if (randomConnect.hidden[userID] == 0) {
-    //     //     DrawPlanet(randomConnect, false);
-
-    //     //     var material = new THREE.LineBasicMaterial({ color: 0xffffff });
-    //     //     var connectLine = new THREE.Geometry();
-    //     //     connectLine.vertices.push(
-    //     //       new THREE.Vector3(
-    //     //         randomConnect.position.x,
-    //     //         randomConnect.position.y,
-    //     //         randomConnect.position.z
-    //     //       )
-    //     //     );
-    //     //     connectLine.vertices.push(
-    //     //       new THREE.Vector3(
-    //     //         data.position.x,
-    //     //         data.position.y,
-    //     //         data.position.z
-    //     //       )
-    //     //     );
-    //     //     var line = new THREE.Line(connectLine, material);
-    //     //     scene.add(line);
-    //     //   }
-    //     // });
-    //   }
-    // });
+    DrawPlanet(Galaxy[Game.originPlanets[userID]], true, userID);
 
     window.addEventListener(
       "resize",
@@ -241,51 +216,14 @@
 
         // console.log();
         // console.log(Galaxy[indexPlanet].connect);
-        divOverlay.innerHTML = `
-        <div>Name : ${Galaxy[indexPlanet].name}</div>
-        <div>Index : ${Galaxy[indexPlanet].index}</div>
-        <div>X : ${Math.floor(Galaxy[indexPlanet].position.x)}</div>
-        <div>Y : ${Math.floor(Galaxy[indexPlanet].position.y)}</div>
-        <div>Z : ${Math.floor(Galaxy[indexPlanet].position.z)}</div>
-
-        `;
-        Galaxy[indexPlanet].construct.forEach(bat => {
-          divOverlay.innerHTML += `<div>${bat.type} : ${bat.player}</div>`;
-        });
-        Galaxy[indexPlanet].connect.forEach(idConnect => {
-          console.log(Galaxy[idConnect]);
-          CalculDistance(
-            Galaxy[indexPlanet].position,
-            Galaxy[idConnect].position
-          );
-          divOverlay.innerHTML += `<div>${
-            Galaxy[idConnect].name
-          } : ${CalculDistance(
-            Galaxy[indexPlanet].position,
-            Galaxy[idConnect].position
-          )}</div>`;
-        });
-          divOverlay.innerHTML += `<div>Iron : ${Galaxy[indexPlanet].value.fer}</div>`;
-          divOverlay.innerHTML += `<div>Elec : ${Galaxy[indexPlanet].value.elec}</div>`;
-          divOverlay.innerHTML += `<div>Money : ${Galaxy[indexPlanet].value.money}</div>`;
+        DrawInfoPlanete(Galaxy[indexPlanet]);
 
         if (
           controls.center.x !== intersects[0].object.position.x ||
           controls.center.y !== intersects[0].object.position.y ||
           controls.center.z !== intersects[0].object.position.z
         ) {
-          // camera.position.set(0, 0, 0);
-          // controls.maxDistance = 60;
-          const Interval = setInterval(() => {
-            // console.log(controls.maxDistance)
-            if (controls.maxDistance >= 60) {
-              controls.maxDistance -= 20;
-              controls.update();
-            } else {
-              clearInterval(Interval);
-              controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
-            }
-          }, 10);
+          ZoomCam(intersects[0].object.position);
 
           // setTimeout(() => {
           //   controls.maxDistance = 3000;
@@ -293,29 +231,133 @@
         } else {
           if (Galaxy[indexPlanet].hidden[userID] === 0) {
             scene.remove(intersects[0].object);
-            DrawPlanet(Galaxy[indexPlanet], true);
+            DrawPlanet(Galaxy[indexPlanet], true, userID);
             Galaxy[indexPlanet].hidden[userID] = 9;
+            DrawListPlanete(userID);
           }
         }
-        controls.center.set(
-          intersects[0].object.position.x,
-          intersects[0].object.position.y,
-          intersects[0].object.position.z
-        );
 
         // controls.maxDistance = 1000;
 
         controls.update();
       }
     });
+
+
+    
   }
 
-  // class Game {
-  //   constructor(game) {
-  //     this.game = game;
-  //   }
-  // }
+  function DrawConnect(data, userID) {
+    // console.log("DrawConnect", data.connect);
+    data.connect.map(idPlanet => {
+      let randomConnect = Galaxy[idPlanet];
+      var material = new THREE.LineBasicMaterial({ color: 0xffffff });
+      var connectLine = new THREE.Geometry();
+      console.log(idPlanet, randomConnect.hidden[userID]);
+      if (randomConnect.hidden[userID] == 0) {
+        DrawPlanet(randomConnect, false, userID);
+      }
 
+      connectLine.vertices.push(
+        new THREE.Vector3(
+          randomConnect.position.x,
+          randomConnect.position.y,
+          randomConnect.position.z
+        )
+      );
+      connectLine.vertices.push(
+        new THREE.Vector3(data.position.x, data.position.y, data.position.z)
+      );
+      var line = new THREE.Line(connectLine, material);
+      Lines.push(line);
+      scene.add(line);
+    });
+  }
+  function DrawPlanet(data, fog = false, userID) {
+    console.log("DRAWPLANET", data.index);
+    if (fog === true) {
+      loader.load(`img/textures/planets/${data.texture}.jpg`, function(
+        texture
+      ) {
+        var geometry = new THREE.SphereGeometry(data.size, 30, 30);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          wireframe: false,
+          side: THREE.DoubleSide,
+        });
+        var sphere = new THREE.Mesh(geometry, material);
+        sphere.position.x = data.position.x;
+        sphere.position.y = data.position.y;
+        sphere.position.z = data.position.z;
+        sphere.cursor = "pointer";
+        sphere.data = data;
+        scene.add(sphere);
+        objects.push(sphere);
+      });
+
+      loader.load(`img/textures/clouds/${getRandomInt(0, 3)}.png`, function(
+        texture
+      ) {
+        var geometry = new THREE.SphereGeometry(
+          data.size + getRandomInt(50, 100) / 100,
+          30,
+          30
+        );
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          color: data.color,
+          transparent: true,
+          opacity: 0.9,
+          wireframe: false
+        });
+        var sphere = new THREE.Mesh(geometry, material);
+        sphere.position.x = data.position.x;
+        sphere.position.y = data.position.y;
+        sphere.position.z = data.position.z;
+        sphere.cursor = "pointer";
+        sphere.data = data;
+        scene.add(sphere);
+        objectsClouds.push(sphere);
+      });
+      DrawConnect(data, userID);
+    } else {
+      console.log("FOG");
+
+      loader.load(`img/textures/planets/${data.texture}.jpg`, function(
+        texture
+      ) {
+        var geometry = new THREE.SphereGeometry(data.size, 10, 10);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.5,
+          wireframe: true
+        });
+        var sphere = new THREE.Mesh(geometry, material);
+        sphere.position.x = data.position.x;
+        sphere.position.y = data.position.y;
+        sphere.position.z = data.position.z;
+        sphere.cursor = "pointer";
+        sphere.data = data;
+        scene.add(sphere);
+        objects.push(sphere);
+      });
+    }
+  }
+  function ZoomCam(position) {
+    controls.maxDistance -= 20;
+    const Interval = setInterval(() => {
+      // console.log(controls.maxDistance)
+      if (controls.maxDistance >= 60) {
+        controls.maxDistance -= 20;
+        controls.update();
+      } else {
+        clearInterval(Interval);
+        controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
+      }
+    }, 10);
+    controls.center.set(position.x, position.y, position.z);
+  }
   function CalculDistance(planetA, planetB) {
     // console.log(planetA, planetB);
     let calX = Math.pow(planetB.x - planetA.x, 2);
@@ -328,7 +370,7 @@
   function ResetCam() {
     controls.center.set(0, 0, 0);
     controls.minDistance = 60;
-    controls.maxDistance = ((Galaxy.length / 20) * 500)*2;
+    controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
     controls.update();
   }
 
@@ -346,6 +388,7 @@
 
   exports.init = init;
   exports.ResetCam = ResetCam;
+  exports.ZoomCam = ZoomCam;
   // exports.Polygon = Polygon;
 });
 
