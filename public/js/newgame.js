@@ -251,7 +251,7 @@
     // console.log("DrawConnect", data.connect);
     data.connect.map(idPlanet => {
       let randomConnect = Galaxy[idPlanet];
-      var material = new THREE.LineBasicMaterial({ color: 0xffffff });
+      var material = new THREE.LineBasicMaterial({ color: 0xffffff, visible: showLine });
       var connectLine = new THREE.Geometry();
       console.log(idPlanet, randomConnect.hidden[userID]);
       if (randomConnect.hidden[userID] == 0) {
