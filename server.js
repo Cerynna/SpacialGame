@@ -1,7 +1,13 @@
 const express = require("express");
-const app = express();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+// const app = express();
+// const http = require("http").Server(app);
+// const io = require("socket.io")(http);
+
+var app = express();
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+var http = require('http');
+
 const axios = require("axios");
 const fs = require("fs");
 const md5 = require("md5");
@@ -10,12 +16,12 @@ const Tools = require("./public/js/tools");
 
 const users = [];
 const games = [];
-const server = {
-  id: Tools.makeID(10),
-  pseudo: "Server",
-  md5: md5("Server"),
-  color: "#F5F5F5"
-};
+// const server = {
+//   id: Tools.makeID(10),
+//   pseudo: "Server",
+//   md5: md5("Server"),
+//   color: "#F5F5F5"
+// };
 const timerTurm = {
   order: 60 * 1000,
   wait: 10 * 1000
@@ -191,7 +197,7 @@ io.on("connection", socket => {
       io.emit(
         "newMessage",
         "** Bienvenue " + CurrentUser.pseudo + " ! **",
-        server,
+        // server,
         Tools.makeID(10)
       );
       io.emit("refreshUnivers", games);
