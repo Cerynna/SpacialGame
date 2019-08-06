@@ -1,21 +1,31 @@
-// const express = require("express");
-// // const app = express();
-// // const http = require("http").Server(app);
-// // const io = require("socket.io")(http);
+const express = require("express");
+// // // const app = express();
+// // // const http = require("http").Server(app);
+// // // const io = require("socket.io")(http);
 
+// // var app = express();
+// // var server = app.listen(3000);
+// // var io = require('socket.io').listen(server);
+// // var http = require('http');
+
+
+// var express = require('express'),
+//     http = require('http');
 // var app = express();
-// var server = app.listen(3000);
+// var server = http.createServer(app);
 // var io = require('socket.io').listen(server);
-// var http = require('http');
+
+// server.listen(3000);
 
 
-var express = require('express'),
-    http = require('http');
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+const app = express();
+const socketIO = require('socket.io');
 
-server.listen(3000);
+const server = express()
+  .use(app)
+  .listen(3000, () => console.log(`Listening Socket on 3000`));
+
+const io = socketIO(server);
 
 
 const axios = require("axios");
