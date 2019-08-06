@@ -51,18 +51,21 @@ const Tools = {
     };
   },
   SaveGame: Game => {
-    console.log(Game)
-    Tools.fs.writeFile("Games/" + Game.id + ".json", JSON.stringify(Game), (err) => {
-      if (err) throw err;
-      console.log('The file has been saved!');
-    });
+    console.log(Game);
+    Tools.fs.writeFile(
+      "Games/" + Game.id + ".json",
+      JSON.stringify(Game),
+      err => {
+        if (err) throw err;
+        console.log("The file has been saved!");
+      }
+    );
   },
-  RecupGame:(idGme)=>{
-   const Game =  JSON.parse(Tools.fs.readFileSync("Games/" + idGme + ".json"));
+  RecupGame: idGme => {
+    const Game = JSON.parse(Tools.fs.readFileSync("Games/" + idGme + ".json"));
 
-  //  console.log(Game)
-   return Game
-
+    //  console.log(Game)
+    return Game;
   },
   CreateGame: (data, Creator) => {
     // = {
@@ -77,7 +80,7 @@ const Tools = {
 
     const originPlanets = [];
 
-    let nbPlanetes = data.size * 20;
+    let nbPlanetes = data.size * 25;
     let moyenIron = 0;
     let moyenElec = 0;
     let moyenMoney = 0;
@@ -131,13 +134,10 @@ const Tools = {
         position: position,
         color: randomValue.rgb,
         construct: construct,
-        index:index,
+        index: index,
         texture: Tools.getRandomInt(0, 29),
         hidden: hiddenBase,
-        connect: [
-          Tools.getRandomInt(0, nbPlanetes - 1),
-          Tools.getRandomInt(0, nbPlanetes - 1)
-        ],
+        connect: null,
         value: {
           fer: Math.floor((randomValue.red * sizePlanet) / 8),
           elec: Math.floor((randomValue.blue * sizePlanet) / 8),
@@ -174,6 +174,46 @@ const Tools = {
 
       Planetes.push(Planete);
     }
+
+    let allCoord = Planetes.map(planete => {
+      // console.log(allCoord)
+
+      return { index: planete.index, position: planete.position };
+    });
+    // console.log(allCoord);
+
+    Planetes.forEach(planetA => {
+      let ResultDistance = allCoord
+        .map(planetB => {
+          const dist = parseFloat(
+            Tools.CalculDistance(planetA.position, planetB.position)
+          );
+          return { index: planetB.index, dist: dist };
+        })
+
+        .sort((a, b) => {
+          return a.dist - b.dist;
+        });
+
+      let newConnect = [];
+
+      let nearConnect = ResultDistance.map(planete =>
+        planete.dist < 300 ? planete.index : false
+      ).filter(x => x);
+
+      let farConnect = ResultDistance.map(planete =>
+        planete.dist >= 700 && nearConnect.indexOf(planete.index)<0 ? planete.index : false
+      )
+        .filter(x => x)
+        .slice(0, 1);
+        let farFarConnect = ResultDistance.map(planete =>
+        planete.dist >= 1500 && nearConnect.indexOf(planete.index)<0 ? planete.index : false
+      )
+        .filter(x => x)
+        .slice(0, 1);
+      Planetes[planetA.index].connect =[...nearConnect, ...farConnect, ...farFarConnect];
+      // console.log(Planetes[planetA.index].connect)
+    });
 
     // console.log(Planetes.length);
     // Planetes = NewGame(Planetes, size);
@@ -395,6 +435,13 @@ const Tools = {
 
     return name;
   },
+  CalculDistance: (planetA, planetB) => {
+    let calX = Math.pow(planetB.x - planetA.x, 2);
+    let calY = Math.pow(planetB.y - planetA.y, 2);
+    let calZ = Math.pow(planetB.z - planetA.z, 2);
+    let distance = Math.sqrt(calX + calY + calZ);
+    return Math.floor(distance);
+  },
   makeID: stringLength => {
     let text = "";
     const possible =
@@ -403,8 +450,11 @@ const Tools = {
     for (let i = 0; i < stringLength; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
-  },
-  test: "test"
+  }
 };
+
+// function monkeyCount(n) {
+//   return Array.from({length:n}, (_,i)=>i+1)
+// }
 
 module.exports = Tools;

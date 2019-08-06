@@ -6,18 +6,23 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <style>
-      canvas {
+      @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+      /* canvas {
         background: url("img/textures/espace.jpg") no-repeat;
         background-size: cover;
+      } */
+      body{
+        font-family: 'Poppins', sans-serif;
       }
       #overlay {
         position: fixed;
         z-index: 1000;
-        width: 200px;
+        max-width: 200px;
         /* min-height: 200px; */
         background: black;
         color: white;
         padding: 5px 10px;
+        text-align: left;
       }
       #command {
         position: fixed;
@@ -25,24 +30,35 @@
         width: 200px;
         /* height: 200px; */
         bottom: 0;
-        right: 0;
+        left: 0;
         background: black;
         color: white;
         padding: 5px 10px;
       }
       #listPlanetes {
         position: fixed;
-        z-index: 1000;
-        width: 200px;
-        /* height: 200px; */
+        z-index: 900;
+        /* width: 200px; */
+        max-height: 100vh;
+        overflow-y: scroll;
+        text-align: right;
         top: 0;
         right: 0;
         background: black;
         color: white;
         padding: 5px 10px;
+        text-transform: capitalize;
       }
       #listPlanetes .valid{
         color: green;
+      }
+      #hoverInfo{
+        position: absolute;
+        z-index: 1000;
+        top : 100px;
+        left: 100px;
+        min-width: 100px;
+        background: rgba(255, 255, 255, 0.7);
       }
     </style>
   </head>
@@ -58,15 +74,19 @@
     </div>
     <div id="listPlanetes">
     </div>
+    <div id="hoverInfo" class="hoverInfo">
+
+    </div>
     <!-- test Galaxy
     <button onclick="GAME.ResetCam()">RESET</button> -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/three.min.js"></script>
+    <script src="js/GLTFLoader.js"></script>
     <script src="js/controls.js"></script>
     <script src="js/newgame.js"></script>
     <script>
-      const socket = io.connect("http://cerynna.fr:3000/");
+      const socket = io.connect("http://localhost:3000/");
 
       socket.on("devGalaxy", game => {
         // console.log(game)
