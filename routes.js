@@ -1,20 +1,16 @@
-module.exports = function (app, games) {
-
+module.exports = function(app, games) {
   const fs = require("fs");
 
-
   /* !!!! ROUTE PUBLIC !!!! */
-  app.get('/', (req, res) => {
-
-    res.render('index', {
+  app.get("/", (req, res) => {
+    res.render("index", {
       games: games
     });
-
   });
-  app.get('/game', (req, res) => {
-
-    res.render('newGame');
-
+  app.get("/game", (req, res) => {
+    res.render("newGame", {
+      lol: "lol"
+    });
   });
 
   // app.get('/test-*', (req, res) => {
@@ -26,12 +22,12 @@ module.exports = function (app, games) {
   //   });
   //   res.end(img, 'binary');
 
-
   // });
 
-
-  app.get('/test', (req, res)=>{
-    res.render('test');
-  })
-
+  app.get("/test", (req, res) => {
+    console.log(req.query)
+    res.render("test", {
+      lol: "lol"
+    });
+  });
 };

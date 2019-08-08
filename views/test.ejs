@@ -1,99 +1,161 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-    <style>
-      @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
-      /* canvas {
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+  <link rel="stylesheet" href="css/newMain.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+
+    /* canvas {
         background: url("img/textures/espace.jpg") no-repeat;
         background-size: cover;
       } */
-      body{
-        font-family: 'Poppins', sans-serif;
-      }
-      #overlay {
-        position: fixed;
-        z-index: 1000;
-        max-width: 200px;
-        /* min-height: 200px; */
-        background: black;
-        color: white;
-        padding: 5px 10px;
-        text-align: left;
-      }
-      #command {
-        position: fixed;
-        z-index: 1000;
-        width: 200px;
-        /* height: 200px; */
-        bottom: 0;
-        left: 0;
-        background: black;
-        color: white;
-        padding: 5px 10px;
-      }
-      #listPlanetes {
-        position: fixed;
-        z-index: 900;
-        /* width: 200px; */
-        max-height: 100vh;
-        overflow-y: scroll;
-        text-align: right;
-        top: 0;
-        right: 0;
-        background: black;
-        color: white;
-        padding: 5px 10px;
-        text-transform: capitalize;
-      }
-      #listPlanetes .valid{
-        color: green;
-      }
-      #hoverInfo{
-        position: absolute;
-        z-index: 1000;
-        top : 100px;
-        left: 100px;
-        min-width: 100px;
-        background: rgba(255, 255, 255, 0.7);
-      }
-    </style>
-  </head>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
 
-  <body style="margin: 0px; overflow: hidden; text-align:center;">
-    <div id="overlay">
-      Clique sur un planete
-    </div>
-    <div id="command">
-      CTRL + DBLCLICK => Reset la vue au centre de la galaxy
-      <button id="buttonToogleLine">Toogle Line</button>
-    </div>
-    </div>
-    <div id="listPlanetes">
-    </div>
-    <div id="hoverInfo" class="hoverInfo">
+    #overlay {
+      position: fixed;
+      z-index: 1000;
+      max-width: 200px;
+      /* min-height: 200px; */
+      background: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: left;
+      display: none;
+    }
+
+    #command {
+      position: fixed;
+      z-index: 1000;
+      width: 200px;
+      /* height: 200px; */
+      bottom: 0;
+      left: 0;
+      background: black;
+      color: white;
+      padding: 5px 10px;
+      display: none;
+    }
+
+    #listPlanetes {
+      position: fixed;
+      z-index: 900;
+      /* width: 200px; */
+      max-height: 100vh;
+      overflow-y: scroll;
+      text-align: right;
+      top: 0;
+      right: 0;
+      background: black;
+      color: white;
+      padding: 5px 10px;
+      text-transform: capitalize;
+      display: none;
+    }
+
+    #listPlanetes .valid {
+      color: green;
+    }
+
+    #hoverInfo {
+      position: absolute;
+      z-index: 1000;
+      top: 100px;
+      left: 100px;
+      min-width: 100px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+</head>
+
+<body id="Galaxy" style="margin: 0px; overflow: hidden; text-align:center;">
+  <div id="overlay">
+    Clique sur un planete
+  </div>
+  <div id="command">
+    CTRL + DBLCLICK => Reset la vue au centre de la galaxy
+    <button id="buttonToogleLine">Toogle Line</button>
+  </div>
+  </div>
+  <div id="listPlanetes">
+  </div>
+  <div id="hoverInfo" class="hoverInfo">
+
+  </div>
+
+  <div id="newOverlay">
+    <div id="menu">Menu</div>
+    <div id="playerRes">
+      <div class="res iron">
+        <div class="value">-</div>
+        <div class="icon iron"></div>
+      </div>
+      <div class="res elec">
+        <div class="value">-</div>
+        <div class="icon elec"></div>
+      </div>
+      <div class="res money">
+        <div class="value">-</div>
+        <div class="icon money"></div>
+      </div>
 
     </div>
-    <!-- test Galaxy
+    <div id="currentPlanet">
+      <div id="planetCoord" class="coord">
+        <div class="x">-</div>
+        <div class="y">-</div>
+        <div class="z">-</div>
+      </div>
+      <div id="planetName"></div>
+      <div id="planetRes">
+        <div class="res iron">
+          <div class="value">-</div>
+          <div class="icon iron"></div>
+        </div>
+        <div class="res elec">
+          <div class="value">-</div>
+          <div class="icon elec"></div>
+        </div>
+        <div class="res money">
+          <div class="value">-</div>
+          <div class="icon money"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- test Galaxy
     <button onclick="GAME.ResetCam()">RESET</button> -->
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/three.min.js"></script>
-    <script src="js/GLTFLoader.js"></script>
-    <script src="js/controls.js"></script>
-    <script src="js/newgame.js"></script>
-    <script>
-      const socket = io.connect("http://cerynna.fr:3000/");
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/three.min.js"></script>
+  <!-- <script src="js/GLTFLoader.js"></script> -->
+  <script src="../js/controls.js"></script>
+  <script src="../js/newgame.js"></script>
+  <script>
+    let socket;
+    if (location.hostname === "localhost") {
+      socket = io.connect("http://localhost:3000/");
+    } else {
+      socket = io.connect("http://cerynna.fr:3000/");
+    }
 
-      socket.on("devGalaxy", game => {
-        // console.log(game)
-        GAME.init(game);
-      });
 
-      // var poly1 = new GAME.init();
-    </script>
-  </body>
+    socket.on("devGalaxy", game => {
+
+      GAME.init(game);
+    });
+    console.log(location.pathname)
+    console.log(location.hostname)
+    socket.emit("devNewGame")
+    // var poly1 = new GAME.init();
+  </script>
+</body>
+
 </html>

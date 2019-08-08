@@ -1,0 +1,128 @@
+#Galaxy #newOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  max-width: 100vw;
+  margin: 5px 20px;
+}
+
+#Galaxy #newOverlay > div {
+  background: rgba(56, 84, 98, 0.6);
+  color: white;
+  border-radius: 5px;
+  border: 2px solid white;
+  height: 40px;
+  vertical-align: middle;
+}
+
+#Galaxy #newOverlay .coord {
+  background: white;
+  color: #385462;
+  padding: 2px 5px;
+  margin: 0 6px;
+  position: relative;
+}
+
+#Galaxy #newOverlay .coord .x, #Galaxy #newOverlay .coord .y, #Galaxy #newOverlay .coord .z {
+  font-size: 0.8em;
+  min-width: 30px;
+}
+
+#Galaxy #newOverlay .coord .x:nth-child(-n+2)::after, #Galaxy #newOverlay .coord .y:nth-child(-n+2)::after, #Galaxy #newOverlay .coord .z:nth-child(-n+2)::after {
+  margin: 0 5px;
+  content: ":";
+}
+
+#Galaxy #newOverlay .res {
+  background: white;
+  color: #385462;
+  padding: 2px 5px;
+  margin: 0 6px;
+  position: relative;
+}
+
+#Galaxy #newOverlay .res .value {
+  width: 50px;
+  font-size: 0.8em;
+  height: 100%;
+}
+
+#Galaxy #newOverlay .res .icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  border-radius: 50%;
+}
+
+#Galaxy #newOverlay .res .icon.iron {
+  background: white center/70% url("../img/iron.png") no-repeat;
+}
+
+#Galaxy #newOverlay .res .icon.elec {
+  background: white center/70% url("../img/elec.png") no-repeat;
+}
+
+#Galaxy #newOverlay .res .icon.money {
+  background: white center/70% url("../img/money.png") no-repeat;
+}
+
+#Galaxy #newOverlay #menu {
+  padding: 0px 10px;
+  margin-right: 20px;
+}
+
+#Galaxy #newOverlay #playerRes {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 2px 0;
+  margin-right: 40px;
+}
+
+#Galaxy #newOverlay #currentPlanet {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#Galaxy #newOverlay #currentPlanet #planetRes, #Galaxy #newOverlay #currentPlanet #planetCoord {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#Galaxy #newOverlay #currentPlanet #planetName {
+  width: 400px;
+  font-size: 2em;
+  text-transform: capitalize;
+}
+/*# sourceMappingURL=newMain.css.map */

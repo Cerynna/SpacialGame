@@ -198,20 +198,33 @@ const Tools = {
       let newConnect = [];
 
       let nearConnect = ResultDistance.map(planete =>
-        planete.dist < 300 ? planete.index : false
+        planete.dist !== 0 && planete.dist < 300 ? planete.index : false
       ).filter(x => x);
 
       let farConnect = ResultDistance.map(planete =>
-        planete.dist >= 700 && nearConnect.indexOf(planete.index)<0 ? planete.index : false
+        planete.dist !== 0 &&
+        planete.dist >= 700 &&
+        nearConnect.indexOf(planete.index) < 0
+          ? planete.index
+          : false
       )
         .filter(x => x)
         .slice(0, 1);
-        let farFarConnect = ResultDistance.map(planete =>
-        planete.dist >= 1500 && nearConnect.indexOf(planete.index)<0 ? planete.index : false
+      let farFarConnect = ResultDistance.map(planete =>
+        planete.dist !== 0 &&
+        planete.dist >= 1500 &&
+        farConnect.indexOf(planete.index) < 0 &&
+        nearConnect.indexOf(planete.index) < 0
+          ? planete.index
+          : false
       )
         .filter(x => x)
         .slice(0, 1);
-      Planetes[planetA.index].connect =[...nearConnect, ...farConnect, ...farFarConnect];
+      Planetes[planetA.index].connect = [
+        ...nearConnect,
+        ...farConnect,
+        ...farFarConnect
+      ];
       // console.log(Planetes[planetA.index].connect)
     });
 
@@ -227,7 +240,7 @@ const Tools = {
       originPlanets: originPlanets,
       playerIn: [Creator]
     };
-    // Tools.SaveGame(Game);
+    Tools.SaveGame(Game);
     return Game;
   },
   nameGenerator: count => {
