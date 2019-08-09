@@ -1,10 +1,13 @@
-const fs = require("fs");
-
+// const fs = require("fs");
+var diff = require("deep-diff").diff;
+var observableDiff = require("deep-diff").observableDiff;
+var applyChange = require("deep-diff").applyChange;
 const Tools = {
   init: () => {
     console.log("INIT TOOLS");
   },
   fs: require("fs"),
+  // : require("deep-diff").diff(),
   getRandomArbitrary: (min, max) => {
     return Math.random() * (max - min) + min;
   },
@@ -51,15 +54,38 @@ const Tools = {
     };
   },
   SaveGame: Game => {
-    console.log(Game);
-    Tools.fs.writeFile(
-      "Games/" + Game.id + ".json",
-      JSON.stringify(Game),
-      err => {
-        if (err) throw err;
-        console.log("The file has been saved!");
+    const path = "Games/" + Game.id + ".json";
+    Tools.fs.access(path, Tools.fs.F_OK, err => {
+      if (err) {
+        console.error("NEWGAME");
+        Tools.fs.writeFile(path, JSON.stringify(Game), err => {
+          if (err) throw err;
+          console.log("New Galaxy " + Game.id + " created");
+        });
+
       }
-    );
+      let lhs = Game;
+      let rhs = Tools.RecupGame(Game.id);
+      let differences = diff(lhs, rhs);
+      if (differences) {
+        observableDiff(lhs, rhs, d => {
+          if (d.path.indexOf('construct') < 0) {
+            applyChange(lhs, rhs, d);
+          } else {
+            console.log(d)
+            if (rhs === null) {
+              applyChange(lhs, rhs, d);
+            }
+          }
+
+        });
+        Tools.fs.writeFile(path, JSON.stringify(lhs), err => {
+          if (err) throw err;
+          console.log("Update Galaxy " + lhs.id + " !!");
+        });
+      }
+    });
+    return Game;
   },
   RecupGame: idGme => {
     const Game = JSON.parse(Tools.fs.readFileSync("Games/" + idGme + ".json"));
@@ -104,8 +130,7 @@ const Tools = {
       }
 
       // console.log('ORIGIN',originPlanets, originPlanets.indexOf(index));
-      let construct = [
-        {
+      let construct = [{
           type: "atack",
           player: null
         },
@@ -151,8 +176,7 @@ const Tools = {
       if (originPlanets.indexOf(index) >= 0) {
         // console.log("ORIGIN", originPlanets, originPlanets.indexOf(index));
         const playerId = originPlanets.indexOf(index);
-        Planete.construct = [
-          {
+        Planete.construct = [{
             type: "atack",
             player: playerId
           },
@@ -178,7 +202,10 @@ const Tools = {
     let allCoord = Planetes.map(planete => {
       // console.log(allCoord)
 
-      return { index: planete.index, position: planete.position };
+      return {
+        index: planete.index,
+        position: planete.position
+      };
     });
     // console.log(allCoord);
 
@@ -188,7 +215,10 @@ const Tools = {
           const dist = parseFloat(
             Tools.CalculDistance(planetA.position, planetB.position)
           );
-          return { index: planetB.index, dist: dist };
+          return {
+            index: planetB.index,
+            dist: dist
+          };
         })
 
         .sort((a, b) => {
@@ -202,22 +232,22 @@ const Tools = {
       ).filter(x => x);
 
       let farConnect = ResultDistance.map(planete =>
-        planete.dist !== 0 &&
-        planete.dist >= 700 &&
-        nearConnect.indexOf(planete.index) < 0
-          ? planete.index
-          : false
-      )
+          planete.dist !== 0 &&
+          planete.dist >= 700 &&
+          nearConnect.indexOf(planete.index) < 0 ?
+          planete.index :
+          false
+        )
         .filter(x => x)
         .slice(0, 1);
       let farFarConnect = ResultDistance.map(planete =>
-        planete.dist !== 0 &&
-        planete.dist >= 1500 &&
-        farConnect.indexOf(planete.index) < 0 &&
-        nearConnect.indexOf(planete.index) < 0
-          ? planete.index
-          : false
-      )
+          planete.dist !== 0 &&
+          planete.dist >= 1500 &&
+          farConnect.indexOf(planete.index) < 0 &&
+          nearConnect.indexOf(planete.index) < 0 ?
+          planete.index :
+          false
+        )
         .filter(x => x)
         .slice(0, 1);
       Planetes[planetA.index].connect = [
@@ -235,8 +265,17 @@ const Tools = {
       id: Tools.makeID(12),
       name: data.name,
       whoCreate: Creator,
-      date: { create: Date.now(), update: 0, end: 0, start: 0 },
-      moyen: { fer: moyenIron, elec: moyenElec, money: moyenMoney },
+      date: {
+        create: Date.now(),
+        update: 0,
+        end: 0,
+        start: 0
+      },
+      moyen: {
+        fer: moyenIron,
+        elec: moyenElec,
+        money: moyenMoney
+      },
       originPlanets: originPlanets,
       playerIn: [Creator]
     };
@@ -427,7 +466,7 @@ const Tools = {
         [3, 3, 4, 4, 1, 1, 4, 4, 5, 5],
         [4, 4, 1, 1, 4, 4, 3, 3, 6, 6]
       ],
-      fn = function(i) {
+      fn = function (i) {
         return Math.floor(Math.random() * vowels[i].length);
       },
       //   ret = [],

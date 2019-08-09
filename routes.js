@@ -24,7 +24,7 @@ module.exports = function(app, games) {
 
   // });
 
-  app.get("/test", (req, res) => {
+  app.get("/test/", (req, res) => {
     console.log(req.query)
     res.render("test", {
       lol: "lol"

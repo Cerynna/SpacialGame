@@ -56,7 +56,7 @@
       color: white;
       padding: 5px 10px;
       text-transform: capitalize;
-      display: none;
+      /* display: none; */
     }
 
     #listPlanetes .valid {
@@ -127,8 +127,11 @@
           <div class="icon money"></div>
         </div>
       </div>
-    </div>
 
+    </div>
+    <div id="planetConstructs">
+
+    </div>
   </div>
   <!-- test Galaxy
     <button onclick="GAME.ResetCam()">RESET</button> -->
@@ -138,8 +141,11 @@
   <!-- <script src="js/GLTFLoader.js"></script> -->
   <script src="../js/controls.js"></script>
   <script src="../js/newgame.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/deep-diff@1/dist/deep-diff.min.js"></script>
   <script>
     let socket;
+
+
     if (location.hostname === "localhost") {
       socket = io.connect("http://localhost:3000/");
     } else {
@@ -148,12 +154,15 @@
 
 
     socket.on("devGalaxy", game => {
-
-      GAME.init(game);
+    console.log("devGalaxy", game)
+      GAME.init(game, 0);
     });
-    console.log(location.pathname)
-    console.log(location.hostname)
-    socket.emit("devNewGame")
+
+    setInterval(() => {
+      console.log('SAVE GAME', GAME.getCurrent());
+      // socket.emit("devNewGame", GAME.getCurrent())
+    }, ((1 * 20) * 1000));
+
     // var poly1 = new GAME.init();
   </script>
 </body>
