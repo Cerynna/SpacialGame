@@ -1,5 +1,5 @@
 #Galaxy {
-  $mainColor: rgb(255, 230, 0);
+  $mainColor: rgb(19, 26, 66);
   $secondColor: rgb(255, 255, 255);
   // padding-top: 20px;
   #newOverlay {
@@ -13,65 +13,65 @@
     // background: linear-gradient(rgba(0,0,0,1) 80%, rgba(0,0,0,0));
     margin: 5px 20px;
     & > div {
-      background: rgba($mainColor, 0.6) ;
+      background: rgba($mainColor, 0.6);
       color: $secondColor;
       border-radius: 5px;
       border: 2px solid $secondColor;
       height: 40px;
       vertical-align: middle;
     }
-    .coord{
-        background: $secondColor;
-        color: $mainColor;
-        padding: 2px 5px;
-        margin: 0 6px;
-        position: relative;
-        
-        .x,.y,.z{
-            font-size: 0.8em;
-            min-width: 30px;
-            &:nth-child(-n+2) {
-                &::after { 
-                    margin: 0 5px;
-                    content: ":";
-                  } 
-            }
-             
-        }
-    }
-    .res {
-        background: $secondColor;
-        color: $mainColor;
-        padding: 2px 5px;
-        margin: 0 6px;
-        
-        position: relative;
-        .value {
-            width: 50px;
-          font-size: 0.8em;
-          height: 100%;
-        }
-        .icon {
-          //   background: red;
-          width: 20px;
-          height: 20px;
-          position: absolute;
-          bottom: -10px;
-          right: -10px;
-          border-radius: 50%;
-          &.iron {
-            background: $secondColor center/70% url("../img/iron.png") no-repeat;
-          }
-          &.elec {
-            background: $secondColor center/70% url("../img/elec.png") no-repeat;
-          }
-          &.money {
-            background: $secondColor center/70% url("../img/money.png")
-              no-repeat;
+    .coord {
+      background: $secondColor;
+      color: $mainColor;
+      padding: 2px 5px;
+      margin: 0 6px;
+      position: relative;
+
+      .x,
+      .y,
+      .z {
+        font-size: 0.8em;
+        min-width: 30px;
+        &:nth-child(-n + 2) {
+          &::after {
+            margin: 0 5px;
+            content: ":";
           }
         }
       }
-    
+    }
+    .res {
+      background: $secondColor;
+      color: $mainColor;
+      padding: 2px 5px;
+      margin: 0 6px;
+
+      position: relative;
+      .value {
+        width: 50px;
+        font-size: 0.8em;
+        height: 100%;
+      }
+      .icon {
+        //   background: red;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        bottom: -10px;
+        right: -10px;
+        border-radius: 50%;
+        &.iron {
+          background: $secondColor center/70% url("../img/iron.png") no-repeat;
+        }
+        &.elec {
+          background: $secondColor center/70% url("../img/elec.png") no-repeat;
+        }
+        &.money {
+          background: $secondColor center/70% url("../img/money.png") no-repeat;
+        }
+      }
+    }
+
     #menu {
       padding: 0px 10px;
       margin-right: 20px;
@@ -82,29 +82,181 @@
       align-items: center;
       margin: 2px 0;
       margin-right: 40px;
-      
     }
     #currentPlanet {
-        display: inline-flex;
-        justify-content: flex-start;
-        align-items: center;
-      #planetRes, #planetCoord {
+      display: inline-flex;
+      justify-content: flex-start;
+      align-items: center;
+      #planetRes,
+      #planetCoord {
         display: inline-flex;
         justify-content: flex-start;
         align-items: center;
       }
-      #planetName{
-          width: 400px;
-          font-size: 2em;
-          text-transform: capitalize;
+      #planetName {
+        width: 400px;
+        font-size: 2em;
+        text-transform: capitalize;
       }
     }
-    #planetConstructs{
-      height: 200px;
+    #planetConstructs {
+      height: auto;
       max-width: 200px;
       position: absolute;
+      padding: 2px 5px;
       left: 0;
       top: 10vh;
+
+      // color: #af0a0a;
+      .bat {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        border: 2px solid $secondColor;
+        margin: 10px auto;
+        &.attack {
+          background: $secondColor center/70% url("../img/attack.png") no-repeat;
+        }
+        &.elec {
+          background: $secondColor center/70% url("../img/explo.png") no-repeat;
+        }
+        &.money {
+          background: $secondColor center/70% url("../img/commerce.png")
+            no-repeat;
+        }
+      }
+      #planetProbes {
+        padding: 0;
+        list-style: none;
+        li {
+          border: 2px solid $secondColor;
+          margin: 10px auto;
+          position: relative;
+          border-radius: 5px;
+          .screenPlanete {
+            // background: green;
+            // border: 2px solid $secondColor;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 15px auto 5px;
+
+            svg {
+              // position: absolute;
+              // top: 15px;
+              // right: 5px;
+              width: 40px;
+              height: 40px;
+              transform: rotateY(-180deg) rotateZ(-90deg);
+              circle {
+                stroke-dasharray: 113px;
+                stroke-dashoffset: 0px;
+                stroke-linecap: round;
+                stroke-width: 3px;
+                stroke: white;
+                fill: none;
+                // animation: countdown 10s linear forwards;
+              }
+            }
+
+            @keyframes countdown {
+              from {
+                stroke-dashoffset: 0px;
+              }
+              to {
+                stroke-dashoffset: 113px;
+              }
+            }
+          }
+          .namePlanete {
+            position: absolute;
+            top: 0;
+            font-size: 0.7em;
+            text-align: center;
+            width: 100%;
+          }
+          padding: 0;
+        }
+      }
     }
+    #Notification {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      height: auto;
+      max-height: 270px;
+      overflow-y: scroll;
+      animation: all 500ms easy;
+      overflow: -moz-scrollbars-none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        width: 0 !important;
+      }
+      .popupNotif {
+        // position: absolute;
+        // bottom: 50px;
+        right: 0;
+        height: 50px;
+        overflow-wrap: normal;
+        overflow: hidden;
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        padding: 2px;
+        // display: none;
+        // animation: popupON 1s linear forwards;
+        width: 300px;
+        transform: scaleX(1);
+        transform-origin: left bottom;
+        .icon {
+          width: 40px;
+          height: 40px;
+          background: #ffffff;
+          border-radius: 50%;
+          margin-right: 10px;
+          border: 2px solid $secondColor;
+        }
+        .message {
+          background: rgba($mainColor, 0.6);
+          color: $secondColor;
+          border-radius: 5px;
+          border: 2px solid $secondColor;
+          width: 240px;
+        }
+      }
+    }
+  }
+}
+@keyframes popupON {
+  from {
+    transform:  scaleY(0);
+    // height: 0;
+  }
+  to {
+    transform:  scaleY(1);
+    // width: 400px;
+    // height: 50px;
+  }
+}
+@keyframes popupOFF {
+  from {
+    width: 400px;
+    // height: 0;
+  }
+  to {
+    width: 0;
+    // height: 50px;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #e60073, 0 0 4px #e60073,
+      0 0 5px #e60073, 0 0 6px #e60073, 0 0 7px #e60073;
+  }
+
+  to {
+    box-shadow: 0 0 2px #fff, 0 0 3px #ff4da6, 0 0 4px #ff4da6, 0 0 5px #ff4da6,
+      0 0 6px #ff4da6, 0 0 7px #ff4da6, 0 0 8px #ff4da6;
   }
 }

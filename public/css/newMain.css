@@ -16,7 +16,7 @@
 }
 
 #Galaxy #newOverlay > div {
-  background: rgba(255, 230, 0, 0.6);
+  background: rgba(19, 26, 66, 0.6);
   color: white;
   border-radius: 5px;
   border: 2px solid white;
@@ -26,25 +26,29 @@
 
 #Galaxy #newOverlay .coord {
   background: white;
-  color: #ffe600;
+  color: #131a42;
   padding: 2px 5px;
   margin: 0 6px;
   position: relative;
 }
 
-#Galaxy #newOverlay .coord .x, #Galaxy #newOverlay .coord .y, #Galaxy #newOverlay .coord .z {
+#Galaxy #newOverlay .coord .x,
+#Galaxy #newOverlay .coord .y,
+#Galaxy #newOverlay .coord .z {
   font-size: 0.8em;
   min-width: 30px;
 }
 
-#Galaxy #newOverlay .coord .x:nth-child(-n+2)::after, #Galaxy #newOverlay .coord .y:nth-child(-n+2)::after, #Galaxy #newOverlay .coord .z:nth-child(-n+2)::after {
+#Galaxy #newOverlay .coord .x:nth-child(-n + 2)::after,
+#Galaxy #newOverlay .coord .y:nth-child(-n + 2)::after,
+#Galaxy #newOverlay .coord .z:nth-child(-n + 2)::after {
   margin: 0 5px;
   content: ":";
 }
 
 #Galaxy #newOverlay .res {
   background: white;
-  color: #ffe600;
+  color: #131a42;
   padding: 2px 5px;
   margin: 0 6px;
   position: relative;
@@ -108,7 +112,8 @@
           align-items: center;
 }
 
-#Galaxy #newOverlay #currentPlanet #planetRes, #Galaxy #newOverlay #currentPlanet #planetCoord {
+#Galaxy #newOverlay #currentPlanet #planetRes,
+#Galaxy #newOverlay #currentPlanet #planetCoord {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -127,10 +132,211 @@
 }
 
 #Galaxy #newOverlay #planetConstructs {
-  height: 200px;
+  height: auto;
   max-width: 200px;
   position: absolute;
+  padding: 2px 5px;
   left: 0;
   top: 10vh;
+}
+
+#Galaxy #newOverlay #planetConstructs .bat {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: 2px solid white;
+  margin: 10px auto;
+}
+
+#Galaxy #newOverlay #planetConstructs .bat.attack {
+  background: white center/70% url("../img/attack.png") no-repeat;
+}
+
+#Galaxy #newOverlay #planetConstructs .bat.elec {
+  background: white center/70% url("../img/explo.png") no-repeat;
+}
+
+#Galaxy #newOverlay #planetConstructs .bat.money {
+  background: white center/70% url("../img/commerce.png") no-repeat;
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes {
+  padding: 0;
+  list-style: none;
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes li {
+  border: 2px solid white;
+  margin: 10px auto;
+  position: relative;
+  border-radius: 5px;
+  padding: 0;
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes li .screenPlanete {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 15px auto 5px;
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes li .screenPlanete svg {
+  width: 40px;
+  height: 40px;
+  -webkit-transform: rotateY(-180deg) rotateZ(-90deg);
+          transform: rotateY(-180deg) rotateZ(-90deg);
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes li .screenPlanete svg circle {
+  stroke-dasharray: 113px;
+  stroke-dashoffset: 0px;
+  stroke-linecap: round;
+  stroke-width: 3px;
+  stroke: white;
+  fill: none;
+}
+
+@-webkit-keyframes countdown {
+  from {
+    stroke-dashoffset: 0px;
+  }
+  to {
+    stroke-dashoffset: 113px;
+  }
+}
+
+@keyframes countdown {
+  from {
+    stroke-dashoffset: 0px;
+  }
+  to {
+    stroke-dashoffset: 113px;
+  }
+}
+
+#Galaxy #newOverlay #planetConstructs #planetProbes li .namePlanete {
+  position: absolute;
+  top: 0;
+  font-size: 0.7em;
+  text-align: center;
+  width: 100%;
+}
+
+#Galaxy #newOverlay #Notification {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: auto;
+  max-height: 270px;
+  overflow-y: scroll;
+  -webkit-animation: all 500ms easy;
+          animation: all 500ms easy;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+
+#Galaxy #newOverlay #Notification::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+#Galaxy #newOverlay #Notification .popupNotif {
+  right: 0;
+  height: 50px;
+  overflow-wrap: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2px;
+  width: 300px;
+  -webkit-transform: scaleX(1);
+          transform: scaleX(1);
+  -webkit-transform-origin: left bottom;
+          transform-origin: left bottom;
+}
+
+#Galaxy #newOverlay #Notification .popupNotif .icon {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid white;
+}
+
+#Galaxy #newOverlay #Notification .popupNotif .message {
+  background: rgba(19, 26, 66, 0.6);
+  color: white;
+  border-radius: 5px;
+  border: 2px solid white;
+  width: 240px;
+}
+
+@-webkit-keyframes popupON {
+  from {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+  }
+  to {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+
+@keyframes popupON {
+  from {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+  }
+  to {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+
+@-webkit-keyframes popupOFF {
+  from {
+    width: 400px;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@keyframes popupOFF {
+  from {
+    width: 400px;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@-webkit-keyframes glow {
+  from {
+    -webkit-box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #e60073, 0 0 4px #e60073, 0 0 5px #e60073, 0 0 6px #e60073, 0 0 7px #e60073;
+            box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #e60073, 0 0 4px #e60073, 0 0 5px #e60073, 0 0 6px #e60073, 0 0 7px #e60073;
+  }
+  to {
+    -webkit-box-shadow: 0 0 2px #fff, 0 0 3px #ff4da6, 0 0 4px #ff4da6, 0 0 5px #ff4da6, 0 0 6px #ff4da6, 0 0 7px #ff4da6, 0 0 8px #ff4da6;
+            box-shadow: 0 0 2px #fff, 0 0 3px #ff4da6, 0 0 4px #ff4da6, 0 0 5px #ff4da6, 0 0 6px #ff4da6, 0 0 7px #ff4da6, 0 0 8px #ff4da6;
+  }
+}
+
+@keyframes glow {
+  from {
+    -webkit-box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #e60073, 0 0 4px #e60073, 0 0 5px #e60073, 0 0 6px #e60073, 0 0 7px #e60073;
+            box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #e60073, 0 0 4px #e60073, 0 0 5px #e60073, 0 0 6px #e60073, 0 0 7px #e60073;
+  }
+  to {
+    -webkit-box-shadow: 0 0 2px #fff, 0 0 3px #ff4da6, 0 0 4px #ff4da6, 0 0 5px #ff4da6, 0 0 6px #ff4da6, 0 0 7px #ff4da6, 0 0 8px #ff4da6;
+            box-shadow: 0 0 2px #fff, 0 0 3px #ff4da6, 0 0 4px #ff4da6, 0 0 5px #ff4da6, 0 0 6px #ff4da6, 0 0 7px #ff4da6, 0 0 8px #ff4da6;
+  }
 }
 /*# sourceMappingURL=newMain.css.map */

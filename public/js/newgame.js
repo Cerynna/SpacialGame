@@ -16,11 +16,12 @@
     mouse,
     loader,
     Game,
-    Galaxy,
     Lines = [],
     userID,
     objects = [],
     showLine = true,
+    gameSpeed = 10,
+    currentPlanete = null,
     objectsClouds = [],
     onRenderFcts = [];
 
@@ -33,7 +34,6 @@
 
   function init(game, idUser = 0) {
     Game = game;
-    Galaxy = game.galaxy;
     userID = idUser;
 
     renderer = new THREE.WebGLRenderer({
@@ -56,16 +56,18 @@
 
     controls = new THREE.OrbitControls(camera);
     controls.minDistance = 0;
-    controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
+    controls.maxDistance = (Game.galaxy.length / 20) * 500 * 2;
 
     loader = new THREE.TextureLoader();
 
-    DrawGame(Galaxy, userID);
+    DrawGame(Game, userID);
     DrawListPlanete(userID);
+    ZoomCam(Game.galaxy[Game.originPlanets[userID]]);
   }
   buttonToogleLine.addEventListener("click", () => {
     ToogleLine();
   });
+
   function ToogleLine() {
     Lines.forEach(line => {
       scene.remove(line);
@@ -74,52 +76,163 @@
     });
     showLine = !showLine;
   }
+
   function DrawPlanetConstruct(planete) {
+    currentPlanete = planete;
     divPlanetConstructs.innerHTML = "";
     console.log(planete.construct[1].player);
-    if (planete.construct[1].player === userID) {
-      planete.connect.forEach(connectPlanetID => {
-        let distance = CalculDistance(
-          planete.position,
-          Galaxy[connectPlanetID].position
-        );
-
-        const buttonProbe = document.createElement("button");
-
-        buttonProbe.addEventListener("click", () => {
-          // alert("SONDE ENVOYER SUR " + Galaxy[connectPlanetID].name);
-
-          Galaxy[connectPlanetID].hidden[userID] = 9;
-          DrawPlanet(Galaxy[connectPlanetID], true, userID);
-        });
-        buttonProbe.innerHTML =
-          "Envoyer une sonde sur " +
-          Galaxy[connectPlanetID].name +
-          " - " +
-          distance;
-
-        divPlanetConstructs.appendChild(buttonProbe);
-        DrawListPlanete(userID);
-      });
-    } else if (planete.hidden[userID] > 0) {
+    if (planete.hidden[userID] > 0) {
       console.log(planete);
-      const buttonExplo = document.createElement("button");
-      buttonExplo.innerHTML = "EXPLO";
-      buttonExplo.addEventListener("click", () => {
-        Galaxy[planete.index].construct[1].player = userID;
 
-        DrawPlanet(Galaxy[planete.index], true, userID);
-        DrawPlanetConstruct(Galaxy[planete.index])
-      });
+      const buttonExplo = document.createElement("div");
+      buttonExplo.classList.add("bat", "elec");
+      // buttonExplo.classList.add('elec')
+      // buttonExplo.innerHTML = "EXPLO";
+      if (Game.galaxy[planete.index].construct[1].player !== null) {
+        // buttonExplo.style.border = "2px solid " + Game.playerIn[Game.galaxy[planete.index].construct[1].player].color;
+        buttonExplo.style.backgroundColor =
+          Game.playerIn[Game.galaxy[planete.index].construct[1].player].color;
+      } else {
+        buttonExplo.addEventListener("click", () => {
+          Game.galaxy[planete.index].construct[1].player = userID;
+
+          DrawPlanet(Game.galaxy[planete.index], true, userID);
+          DrawPlanetConstruct(Game.galaxy[planete.index]);
+        });
+      }
+
       divPlanetConstructs.appendChild(buttonExplo);
+
+      const divListProbe = document.createElement("ul");
+      divListProbe.id = "planetProbes";
+
+      if (Game.galaxy[planete.index].construct[1].player == userID) {
+        planete.connect.forEach(connectPlanetID => {
+          let distance = CalculDistance(
+            planete.position,
+            Game.galaxy[connectPlanetID].position
+          );
+          const buttonProbe = document.createElement("li");
+
+          // buttonProbe.innerHTML =
+          //   Game.galaxy[connectPlanetID].name +
+          //   " - " +
+          //   distance;
+          const divNamePlanete = document.createElement("div");
+          divNamePlanete.classList.add("namePlanete");
+          divNamePlanete.innerHTML = Game.galaxy[connectPlanetID].name;
+
+          const divScreenPlanete = document.createElement("div");
+
+          divScreenPlanete.classList.add("screenPlanete");
+
+          if (Game.galaxy[connectPlanetID].hidden[userID] > 0) {
+            divScreenPlanete.style.background = `center url("/img/textures/planets/${
+              Game.galaxy[connectPlanetID].texture
+            }.jpg") no-repeat`;
+            divScreenPlanete.addEventListener("click", () => {
+              // Game.galaxy[connectPlanetID].hidden[userID] = 9;
+              // DrawPlanet(Game.galaxy[connectPlanetID], true, userID);
+              ZoomCam(Game.galaxy[connectPlanetID]);
+            });
+          } else {
+            divScreenPlanete.style.background = `linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),  center url("/img/textures/planets/${
+              Game.galaxy[connectPlanetID].texture
+            }.jpg")  no-repeat`;
+
+            console.log();
+            // "</div>";
+            divScreenPlanete.addEventListener("click", () => {
+              //
+              divScreenPlanete.innerHTML =
+                // '<div id="countdown">' +
+                "<svg>" + '<circle r="17" cx="20" cy="20">' + "</svg>";
+              divScreenPlanete.querySelector(
+                "circle"
+              ).style.animation = `countdown ${distance *
+                gameSpeed}ms linear forwards`;
+
+              setTimeout(() => {
+                Game.galaxy[connectPlanetID].hidden[userID] = 9;
+                DrawPlanet(Game.galaxy[connectPlanetID], true, userID);
+
+                if (
+                  currentPlanete !== null &&
+                  currentPlanete.index === planete.index
+                ) {
+
+                  divScreenPlanete.style.animation = 'glow 1s ease-in-out infinite alternate';
+
+                  divScreenPlanete.style.background = `center url("/img/textures/planets/${
+                    Game.galaxy[connectPlanetID].texture
+                  }.jpg") no-repeat`;
+                  divScreenPlanete.addEventListener("click", () => {
+                    // Game.galaxy[connectPlanetID].hidden[userID] = 9;
+                    // DrawPlanet(Game.galaxy[connectPlanetID], true, userID);
+                    ZoomCam(Game.galaxy[connectPlanetID]);
+                  });
+                }
+                Notification(Game.galaxy[connectPlanetID], 'newExplo')
+                //
+              }, distance * gameSpeed);
+            });
+          }
+
+          // divScreenPlanete.addEventListener("click", () => {
+          //   Game.galaxy[connectPlanetID].hidden[userID] = 9;
+          //   DrawPlanet(Game.galaxy[connectPlanetID], true, userID);
+          // });
+
+          buttonProbe.appendChild(divScreenPlanete);
+          buttonProbe.appendChild(divNamePlanete);
+          divListProbe.appendChild(buttonProbe);
+          DrawListPlanete(userID);
+        });
+      }
+      divPlanetConstructs.appendChild(divListProbe);
+
+      const buttonAttack = document.createElement("div");
+      buttonAttack.classList.add("bat", "attack");
+      // buttonAttack.innerHTML = "Attack";
+      if (Game.galaxy[planete.index].construct[0].player !== null) {
+        // buttonExplo.style.border = "2px solid " + Game.playerIn[Game.galaxy[planete.index].construct[1].player].color;
+        buttonAttack.style.backgroundColor =
+          Game.playerIn[Game.galaxy[planete.index].construct[0].player].color;
+      } else {
+        buttonAttack.addEventListener("click", () => {
+          Game.galaxy[planete.index].construct[0].player = userID;
+
+          DrawPlanet(Game.galaxy[planete.index], true, userID);
+          DrawPlanetConstruct(Game.galaxy[planete.index]);
+        });
+      }
+      divPlanetConstructs.appendChild(buttonAttack);
+
+      const buttonMoney = document.createElement("div");
+      buttonMoney.classList.add("bat", "money");
+      // buttonMoney.innerHTML = "Money";
+      if (Game.galaxy[planete.index].construct[2].player !== null) {
+        // buttonExplo.style.border = "2px solid " + Game.playerIn[Game.galaxy[planete.index].construct[1].player].color;
+        buttonMoney.style.backgroundColor =
+          Game.playerIn[Game.galaxy[planete.index].construct[2].player].color;
+      } else {
+        buttonMoney.addEventListener("click", () => {
+          Game.galaxy[planete.index].construct[2].player = userID;
+
+          DrawPlanet(Game.galaxy[planete.index], true, userID);
+          DrawPlanetConstruct(Game.galaxy[planete.index]);
+        });
+      }
+      divPlanetConstructs.appendChild(buttonMoney);
     }
   }
+
   function DrawListPlanete(userID) {
     divListPlanetes.innerHTML = "";
 
     let ShowPlanetes = [];
 
-    Galaxy.forEach(planete => {
+    Game.galaxy.forEach(planete => {
       if (planete.hidden[userID] > 0) {
         ShowPlanetes.push(planete.index);
         planete.connect.forEach(idPlanetConnect => {
@@ -133,10 +246,12 @@
     );
 
     const divTotalPlanetes = document.createElement("div");
-    divTotalPlanetes.innerHTML = `${ExplorPlanetes.length}/${Galaxy.length}`;
+    divTotalPlanetes.innerHTML = `${ExplorPlanetes.length}/${
+      Game.galaxy.length
+    }`;
     divListPlanetes.appendChild(divTotalPlanetes);
     ExplorPlanetes.forEach((idPlanet, key) => {
-      const planete = Galaxy[idPlanet];
+      const planete = Game.galaxy[idPlanet];
 
       let divPlanete = document.createElement("div");
       divPlanete.innerHTML = `${planete.name}`;
@@ -154,8 +269,7 @@
   function DrawInfoPlanete(planete) {
     const divCurrentPlanet = divOverlay.children.currentPlanet;
     console.log(planete.hidden[userID]);
-    divCurrentPlanet.children.planetName.innerHTML =
-      planete.hidden[userID] > 0 ? planete.name : "???";
+    divCurrentPlanet.children.planetName.innerHTML = planete.name;
     divCurrentPlanet.children.planetRes.querySelector(
       ".iron .value"
     ).innerHTML = planete.hidden[userID] > 0 ? planete.value.fer : "???";
@@ -172,36 +286,12 @@
       planete.hidden[userID] > 0 ? Math.floor(planete.position.y) : "???";
     divCurrentPlanet.children.planetCoord.querySelector(".z").innerHTML =
       planete.hidden[userID] > 0 ? Math.floor(planete.position.z) : "???";
-
-    // divOverlay.innerHTML = `
-    // <div>Name : ${planete.name}</div>
-    // <div>Index : ${planete.index}</div>
-    // <div>X : ${Math.floor(planete.position.x)}</div>
-    // <div>Y : ${Math.floor(planete.position.y)}</div>
-    // <div>Z : ${Math.floor(planete.position.z)}</div>
-
-    // `;
-    // planete.construct.forEach(bat => {
-    //   divOverlay.innerHTML += `<div>${bat.type} : ${bat.player}</div>`;
-    // });
-    // planete.connect.forEach(idConnect => {
-    //   CalculDistance(planete.position, Galaxy[idConnect].position);
-    //   divOverlay.innerHTML += `<div>${
-    //     Galaxy[idConnect].name
-    //   } : ${CalculDistance(
-    //     planete.position,
-    //     Galaxy[idConnect].position
-    //   )}</div>`;
-    // });
-    // divOverlay.innerHTML += `<div>Iron : ${planete.value.fer}</div>`;
-    // divOverlay.innerHTML += `<div>Elec : ${planete.value.elec}</div>`;
-    // divOverlay.innerHTML += `<div>Money : ${planete.value.money}</div>`;
   }
 
-  function DrawGame(Galaxy, userID) {
+  function DrawGame(Game, userID) {
     loader.load(`img/textures/espace.jpg`, function(texture) {
       var geometry = new THREE.SphereGeometry(
-        (Galaxy.length / 20) * 500 * 2 + 1000,
+        (Game.galaxy.length / 20) * 500 * 2 + 1000,
         30,
         30
       );
@@ -217,54 +307,12 @@
       scene.add(sphere);
     });
 
-
-Galaxy.forEach(planete=>{
-  if(planete.hidden[userID]>0){
-
-    DrawPlanet(planete, true, userID);
-    DrawConnect(planete, userID);
-  }
-})
-
-    
-
-    // renderer.domElement.addEventListener(
-    //   "mousedown",
-    //   event => {
-    //     var rect = renderer.domElement.getBoundingClientRect();
-    //     mouse.x =
-    //       ((event.clientX - rect.left) / (rect.width - rect.left)) * 2 - 1;
-    //     mouse.y =
-    //       -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
-
-    //     raycaster.setFromCamera(mouse, camera);
-    //     intersects = raycaster.intersectObjects(objects);
-    //     if (intersects.length > 0) {
-    //       hoverInfo.style.display = "none";
-    //       const indexPlanet = intersects[0].object.data.index;
-
-    //       if (
-    //         controls.center.x !== intersects[0].object.position.x ||
-    //         controls.center.y !== intersects[0].object.position.y ||
-    //         controls.center.z !== intersects[0].object.position.z
-    //       ) {
-    //         ZoomCam(Galaxy[indexPlanet]);
-    //         DrawInfoPlanete(Galaxy[indexPlanet]);
-    //       } else {
-    //         if (Galaxy[indexPlanet].hidden[userID] === 0) {
-    //           // scene.remove(intersects[0].object);
-    //           DrawPlanet(Galaxy[indexPlanet], true, userID);
-    //           Galaxy[indexPlanet].hidden[userID] = 9;
-    //           DrawListPlanete(userID);
-    //           DrawInfoPlanete(Galaxy[indexPlanet]);
-    //         }
-    //       }
-    //       controls.update();
-    //     }
-    //   },
-    //   false
-    // );
-
+    Game.galaxy.forEach(planete => {
+      if (planete.hidden[userID] > 0) {
+        DrawPlanet(planete, true, userID);
+        DrawConnect(planete, userID);
+      }
+    });
     renderer.domElement.addEventListener(
       "mousedown",
       event => {
@@ -409,9 +457,10 @@ Galaxy.forEach(planete=>{
       });
     });
   }
+
   function DrawConnect(data, userID) {
     data.connect.map(idPlanet => {
-      let randomConnect = Galaxy[idPlanet];
+      let randomConnect = Game.galaxy[idPlanet];
       var material = new THREE.LineBasicMaterial({
         color: 0xffffff,
         visible: showLine
@@ -483,7 +532,7 @@ Galaxy.forEach(planete=>{
 
   function DrawPlanet(data, fog = false, userID) {
     CleanScene(data.position);
-    console.log("DrawPlanet",data)
+    console.log("DrawPlanet", data);
 
     if (fog === true) {
       DrawConstructs(data);
@@ -559,8 +608,12 @@ Galaxy.forEach(planete=>{
     if (data.construct)
       data.construct.forEach((bat, key) => {
         if (bat.type !== "megapole" && bat.player !== null && Game.playerIn) {
+          console.log(
+            "DrawConstructs",
+            Game.playerIn,
+            Game.playerIn[bat.player]
+          );
 
-          console.log("DrawConstructs",Game.playerIn, Game.playerIn[bat.player].color);
           const sprite = (Math.PI * 2) / 3;
           const phiStart = sprite * key;
           const phiLength = sprite;
@@ -600,11 +653,50 @@ Galaxy.forEach(planete=>{
         controls.update();
       } else {
         clearInterval(Interval);
-        controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
+        controls.maxDistance = (Game.galaxy.length / 20) * 500 * 2;
       }
-    }, 10);
+    }, 5);
+    // controls.maxDistance  = 60;
     controls.center.set(position.x, position.y, position.z);
   }
+
+  function Notification(planete, type) {
+
+
+    const popupNotif = document.createElement("div");
+    popupNotif.classList.add('popupNotif');
+
+    const divIcon = document.createElement("div");
+    divIcon.classList.add('icon');
+
+    const divMessage = document.createElement("div");
+    divMessage.classList.add('message');
+
+    const divNotification = document.querySelector("#Notification");
+
+switch (type) {
+  case "newExplo":
+    console.log(planete);
+    divIcon.style.background = `center url("img/textures/planets/${planete.texture}.jpg") no-repeat`;
+    divMessage.innerHTML = planete.name + " découverte"
+    divIcon.addEventListener('click', ()=>{
+      ZoomCam(planete)
+    })
+    break;
+
+  default:
+    break;
+}
+popupNotif.appendChild(divIcon);
+popupNotif.appendChild(divMessage);
+divNotification.appendChild(popupNotif);
+    // divMessage.innerHTML = message;
+    divNotification.scrollTo(0,divNotification.scrollHeight);
+    popupNotif.style.animation = "popupON 1s linear forwards";
+
+
+  }
+
   function CalculDistance(planetA, planetB) {
     let calX = Math.pow(planetB.x - planetA.x, 2);
     let calY = Math.pow(planetB.y - planetA.y, 2);
@@ -612,10 +704,11 @@ Galaxy.forEach(planete=>{
     let distance = Math.sqrt(calX + calY + calZ);
     return Math.floor(distance);
   }
+
   function ResetCam() {
     controls.center.set(0, 0, 0);
     controls.minDistance = 60;
-    controls.maxDistance = (Galaxy.length / 20) * 500 * 2;
+    controls.maxDistance = (Game.galaxy.length / 20) * 500 * 2;
     controls.update();
   }
 
@@ -643,7 +736,6 @@ Galaxy.forEach(planete=>{
   }
 
   function getCurrent() {
-    Game.galaxy = Galaxy;
     return Game;
   }
 

@@ -83,7 +83,7 @@ io.on("connection", socket => {
     },
     base: {}
   };
-  // socket.emit("devGalaxy", Tools.RecupGame("OSxQuFQhUXb6"));
+  // socket.emit("devGalaxy", Tools.RecupGame("VLoY2MnqF7Vs"));
   socket.emit(
     "devGalaxy",
     Tools.CreateGame(
@@ -92,9 +92,7 @@ io.on("connection", socket => {
         id: "4ESMfqHwXL",
         pseudo: "Hystérias",
         md5: "6362a9d480ce9ec03af5916f0b07fb01",
-        color: "#473D48",
-        Res: { Iron: 0, Elec: 0, Money: 0 },
-        base: {}
+        color: "#af0a0a",
       }
     )
   );
@@ -126,7 +124,7 @@ io.on("connection", socket => {
   socket.on("devNewGame", (Game)=>{
     console.log("devNewGame")
 
-// Tools.SaveGame(Game)
+// Tools.SaveGame(Game);
 
 
   })

@@ -40,7 +40,7 @@
       background: black;
       color: white;
       padding: 5px 10px;
-      display: none;
+      /* display: none; */
     }
 
     #listPlanetes {
@@ -56,7 +56,7 @@
       color: white;
       padding: 5px 10px;
       text-transform: capitalize;
-      /* display: none; */
+      display: none;
     }
 
     #listPlanetes .valid {
@@ -132,6 +132,42 @@
     <div id="planetConstructs">
 
     </div>
+    <div id="Notification">
+      <div class="popupNotif">
+        <div class="icon"></div>
+        <div class="message">
+          Benvenue Explorateur
+        </div>
+      </div>
+<!-- 
+
+      <div class="popupNotif">
+        <div class="icon"></div>
+        <div class="message">
+          SOIZFOSDIF SDF JOSDF JO
+        </div>
+      </div>
+
+      <div class="popupNotif">
+        <div class="icon"></div>
+        <div class="message">
+          SOIZFOSDIF SDF JOSDF JO
+        </div>
+      </div>
+      <div class="popupNotif">
+        <div class="icon"></div>
+        <div class="message">
+          SOIZFOSDIF SDF JOSDF JO
+        </div>
+      </div>
+      <div class="popupNotif">
+        <div class="icon"></div>
+        <div class="message">
+          SOIZFOSDIF SDF JOSDF JO
+        </div>
+      </div> -->
+
+    </div>
   </div>
   <!-- test Galaxy
     <button onclick="GAME.ResetCam()">RESET</button> -->
@@ -160,7 +196,7 @@
 
     setInterval(() => {
       console.log('SAVE GAME', GAME.getCurrent());
-      // socket.emit("devNewGame", GAME.getCurrent())
+      socket.emit("devNewGame", GAME.getCurrent())
     }, ((1 * 20) * 1000));
 
     // var poly1 = new GAME.init();

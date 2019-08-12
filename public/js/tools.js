@@ -57,33 +57,38 @@ const Tools = {
     const path = "Games/" + Game.id + ".json";
     Tools.fs.access(path, Tools.fs.F_OK, err => {
       if (err) {
-        console.error("NEWGAME");
+        console.error("NEWGAME", Game);
         Tools.fs.writeFile(path, JSON.stringify(Game), err => {
           if (err) throw err;
           console.log("New Galaxy " + Game.id + " created");
         });
 
-      }
-      let lhs = Game;
-      let rhs = Tools.RecupGame(Game.id);
-      let differences = diff(lhs, rhs);
-      if (differences) {
-        observableDiff(lhs, rhs, d => {
-          if (d.path.indexOf('construct') < 0) {
+      } else {
+        let lhs = Tools.RecupGame(Game.id);
+        let rhs = Game;
+        let differences = diff(lhs, rhs);
+        if (differences) {
+          console.log(differences)
+          observableDiff(lhs, rhs, d => {
+            // if (d.path.indexOf('construct') < 0) {
+            //   applyChange(lhs, rhs, d);
+            // } else {
+            //   console.log(d)
+            //   if (rhs === null) {
             applyChange(lhs, rhs, d);
-          } else {
-            console.log(d)
-            if (rhs === null) {
-              applyChange(lhs, rhs, d);
-            }
-          }
+            //   }
+            // }
 
-        });
-        Tools.fs.writeFile(path, JSON.stringify(lhs), err => {
-          if (err) throw err;
-          console.log("Update Galaxy " + lhs.id + " !!");
-        });
+          });
+
+
+          Tools.fs.writeFile(path, JSON.stringify(lhs), err => {
+            if (err) throw err;
+            console.log("Update Galaxy " + lhs.id + " !!");
+          });
+        }
       }
+
     });
     return Game;
   },
@@ -164,14 +169,14 @@ const Tools = {
         hidden: hiddenBase,
         connect: null,
         value: {
-          fer: Math.floor((randomValue.red * sizePlanet) / 8),
-          elec: Math.floor((randomValue.blue * sizePlanet) / 8),
-          money: Math.floor((randomValue.green * sizePlanet) / 20)
+          fer: Math.floor((randomValue.red * (sizePlanet / 2)) / 8),
+          elec: Math.floor((randomValue.blue * (sizePlanet / 2)) / 8),
+          money: Math.floor((randomValue.green * (sizePlanet / 2)) / 20)
         }
       };
-      moyenIron += Math.floor((randomValue.red * sizePlanet) / 8);
-      moyenElec += Math.floor((randomValue.blue * sizePlanet) / 8);
-      moyenMoney += Math.floor((randomValue.green * sizePlanet) / 20);
+      moyenIron += Math.floor((randomValue.red * sizePlanet / 10) / 8);
+      moyenElec += Math.floor((randomValue.blue * sizePlanet / 10) / 8);
+      moyenMoney += Math.floor((randomValue.green * sizePlanet / 10) / 20);
       // console.log(originPlanets.indexOf(index));
       if (originPlanets.indexOf(index) >= 0) {
         // console.log("ORIGIN", originPlanets, originPlanets.indexOf(index));
@@ -193,6 +198,11 @@ const Tools = {
             player: null
           }
         ];
+        Planete.value = {
+          fer: Math.floor(2500 / 8),
+          elec: Math.floor(2500 / 8),
+          money: Math.floor(2500 / 20)
+        };
         Planete.hidden[playerId] = 9;
       }
 
@@ -225,7 +235,7 @@ const Tools = {
           return a.dist - b.dist;
         });
 
-      let newConnect = [];
+      // let newConnect = [];
 
       let nearConnect = ResultDistance.map(planete =>
         planete.dist !== 0 && planete.dist < 300 ? planete.index : false
@@ -260,6 +270,30 @@ const Tools = {
 
     // console.log(Planetes.length);
     // Planetes = NewGame(Planetes, size);
+
+
+const playerIN = [{
+  name: Creator.pseudo,
+  index: 0,
+  color: '#af0a0a',
+  res: {
+    fer: 312,
+    elec:312,
+    money: 125
+  }
+}, {
+  name: 'Kevin',
+  index: 1,
+  color: '#1eafc2',
+  res: {
+    fer: 312,
+    elec:312,
+    money: 125
+  }
+}]
+
+
+
     const Game = {
       galaxy: Planetes,
       id: Tools.makeID(12),
@@ -277,7 +311,7 @@ const Tools = {
         money: moyenMoney
       },
       originPlanets: originPlanets,
-      playerIn: [Creator]
+      playerIn: playerIN
     };
     // Tools.SaveGame(Game);
     return Game;
@@ -485,7 +519,12 @@ const Tools = {
       //   ret.push(name);
     }
 
-    return name;
+    return Tools.capitalize(name);
+  },
+
+  capitalize:(s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
   },
   CalculDistance: (planetA, planetB) => {
     let calX = Math.pow(planetB.x - planetA.x, 2);
